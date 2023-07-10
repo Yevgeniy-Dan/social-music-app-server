@@ -113,7 +113,7 @@ You can use DBeaver or other libraries to connect to postgres docker database wi
    $ npm run seed
    ``` -->
 
-This will execute the seed script using the Node.js environment inside the container.
+<!-- This will execute the seed script using the Node.js environment inside the container. -->
 
 ### Test the App with Postman
 
