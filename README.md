@@ -38,13 +38,13 @@ This is the server-side application for the Social Music App.
    DB_USER=<your_database_user>
    DB_PASSWORD=<your_database_password>
    ```
-5. **Run database migrations**
+<!-- 5. **Run database migrations**
    ```bash
    npm run migrate
-   ```
-6. **Start the server**
+   ``` -->
+5. **Start the server**
    ```bash
-   npm run dev
+   npm run start:dev
    ```
    The server will start running on `http://localhost:3000`.
 
@@ -94,8 +94,12 @@ You can use DBeaver or other libraries to connect to postgres docker database wi
    ![docker-compose-up](./images/docker-compose-up.png)
 
 3. **Populate the database with dummy data**
+   
+   - Install DBeaver
+   - Connect to a database running on a docker container
+   - Make a data import (contact the owner for the files)
 
-   - Access the running container
+   <!-- - Access the running container
 
    ```bash
    docker exec -it myapp-container sh
@@ -107,7 +111,7 @@ You can use DBeaver or other libraries to connect to postgres docker database wi
 
    ```bash
    $ npm run seed
-   ```
+   ``` -->
 
 This will execute the seed script using the Node.js environment inside the container.
 
