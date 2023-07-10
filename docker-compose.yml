@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  node_app:
+    container_name: music-social-app
+    build: .
+    image: music-social-app
+    ports:
+      - '8080:3000'
+    environment:
+      - PG_DB=music-social
+      - PG_USER=postgres
+      - PG_PASSWORD=12345
+      - PG_HOST=node_db
+      - PG_PORT=5432
+    depends_on:
+      - node_db
+
+  node_db:
+    container_name: music-social-db
+    image: postgres
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_DB=music-social
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345
+    volumes:
+      - node_db_data:/var/lib/postgresql/data
+
+volumes:
+  node_db_data: {}

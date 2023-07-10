@@ -1,73 +1,122 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Social Music App Server
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This is the server-side application for the Social Music App.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Table of Contents
 
-## Description
+- [Social Music App Server](#social-music-app-server)
+  - [Table of Contents](#table-of-contents)
+  - [How to Run the App Locally](#how-to-run-the-app-locally)
+  - [How to Run the App Using Docker](#how-to-run-the-app-using-docker)
+    - [Run PostgreSQL in a container](#run-postgresql-in-a-container)
+    - [Build and Run the Docker Service](#build-and-run-the-docker-service)
+    - [Test the App with Postman](#test-the-app-with-postman)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## How to Run the App Locally
 
-## Installation
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/Yevgeniy-Dan/social-music-app-server.git
+   cd social-music-app-server
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+3. **Set up the PostgreSQL database**
+   - Make sure you have PostgreSQL installed and running locally.
+   - Create a new PostgreSQL database.
+4. **Configure environment variables**
+   - Create a `.env` file in the project root directory.
+   - Set the following environment variables in the `.env` file:
+   ```bash
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_NAME=<your_database_name>
+   DB_USER=<your_database_user>
+   DB_PASSWORD=<your_database_password>
+   ```
+5. **Run database migrations**
+   ```bash
+   npm run migrate
+   ```
+6. **Start the server**
+   ```bash
+   npm run dev
+   ```
+   The server will start running on `http://localhost:3000`.
+
+## How to Run the App Using Docker
+
+To run the app using Docker, we need to set up a PostgreSQL database container and then run the app container.
+
+### Run PostgreSQL in a container
+
+**Copy the following commands to run the postgres container:**
 
 ```bash
-$ npm install
+docker compose up -d node_db
 ```
 
-## Running the app
+To check the logs, we can type:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+docker compose logs
 ```
 
-## Test
+You should get an output similar to this one:
 
-```bash
-# unit tests
-$ npm run test
+![docker-compose-logs](./images/docker-compose-logs.png)
 
-# e2e tests
-$ npm run test:e2e
+If we see "database system is ready to accept connections" we are good to go!
 
-# test coverage
-$ npm run test:cov
-```
+You can use DBeaver or other libraries to connect to postgres docker database with credentials pointed in `docker-compose.yml` file.
 
-## Support
+### Build and Run the Docker Service
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+1. **Build the Docker image:**
 
-## Stay in touch
+   ```bash
+   docker compose build
+   ```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+   ![docker-compose-build](./images/docker-build.png)
 
-## License
+2. **Start the service:**
 
-Nest is [MIT licensed](LICENSE).
+   ```bash
+   docker compose up node_app
+   ```
+
+   This should be the output on the terminal
+   ![docker-compose-up](./images/docker-compose-up.png)
+
+3. **Populate the database with dummy data**
+
+   - Access the running container
+
+   ```bash
+   docker exec -it myapp-container sh
+   ```
+
+   This command will open a shell session inside the running container.
+
+   - Run the seed script inside the container
+
+   ```bash
+   $ npm run seed
+   ```
+
+This will execute the seed script using the Node.js environment inside the container.
+
+### Test the App with Postman
+
+Let's test the app using Postman.
+
+1. Make a GET request to `http://localhost:3000`.
+
+2. Make a GET request to `http://localhost:3000/posts`.
+
+We should receive an empty array as a response.
