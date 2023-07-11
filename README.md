@@ -29,24 +29,33 @@ This is the server-side application for the Social Music App.
    - Make sure you have PostgreSQL installed and running locally.
    - Create a new PostgreSQL database.
 4. **Configure environment variables**
+
    - Create a `.env` file in the project root directory.
    - Set the following environment variables in the `.env` file:
+
    ```bash
-   DB_HOST=localhost
-   DB_PORT=5432
-   DB_NAME=<your_database_name>
-   DB_USER=<your_database_user>
-   DB_PASSWORD=<your_database_password>
+   NODE_ENV=development
+   PORT=<your_app_port>
+   CLIENT_ORIGIN=
+
+   PG_HOST=localhost
+   PG_USER=<your_database_user>
+   PG_DB=<your_database_name>
+   PG_PORT=5432
+   PG_PASSWORD=<your_database_password>
+
    ```
-<!-- 5. **Run database migrations**
-   ```bash
-   npm run migrate
-   ``` -->
+
+   <!-- 5. **Run database migrations**
+      ```bash
+      npm run migrate
+      ``` -->
+
 5. **Start the server**
    ```bash
    npm run start:dev
    ```
-   The server will start running on `http://localhost:3000`.
+   The server will start running on `http://localhost:${your_port}`.
 
 ## How to Run the App Using Docker
 
@@ -57,7 +66,7 @@ To run the app using Docker, we need to set up a PostgreSQL database container a
 **Copy the following commands to run the postgres container:**
 
 ```bash
-docker compose up -d node_db
+docker compose up -d db
 ```
 
 To check the logs, we can type:
@@ -87,27 +96,29 @@ You can use DBeaver or other libraries to connect to postgres docker database wi
 2. **Start the service:**
 
    ```bash
-   docker compose up node_app
+   docker compose up music_social_app
    ```
 
    This should be the output on the terminal
    ![docker-compose-up](./images/docker-compose-up.png)
 
 3. **Populate the database with dummy data**
-   
-   - Install DBeaver
-   - Connect to a database running on a docker container
-   - Make a data import (contact the owner for the files)
 
-   <!-- - Access the running container
+   - Access the running container
 
    ```bash
-   docker exec -it myapp-container sh
+   docker exec -it music-social-app sh
    ```
 
    This command will open a shell session inside the running container.
 
-   - Run the seed script inside the container
+   Make a database migration using the `npm run migration:run` command
+
+   - Install DBeaver
+   - Connect to a database running on a docker container
+   - Make a data import (contact the owner for the files)
+
+   <!-- - Run the seed script inside the container
 
    ```bash
    $ npm run seed
