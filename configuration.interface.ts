@@ -1,5 +1,6 @@
 export interface Configuration {
   port: number;
+  clientOrigin: string;
   database: {
     host: string;
     port: number;
