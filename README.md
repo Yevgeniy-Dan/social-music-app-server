@@ -52,10 +52,14 @@ This is the server-side application for the Social Music App.
       ``` -->
 
 5. **Start the server**
+
    ```bash
    npm run start:dev
    ```
+
    The server will start running on `http://localhost:${your_port}`.
+
+6. Make a database migration using the `npm run migration:run` command
 
 ## How to Run the App Using Docker
 
@@ -130,8 +134,8 @@ You can use DBeaver or other libraries to connect to postgres docker database wi
 
 Let's test the app using Postman.
 
-1. Make a GET request to `http://localhost:3000`.
+1. Make a GET request to `http://localhost:8080`.
 
-2. Make a GET request to `http://localhost:3000/posts`.
+2. Make a GET request to `http://localhost:8080/posts`.
 
 We should receive an empty array as a response.

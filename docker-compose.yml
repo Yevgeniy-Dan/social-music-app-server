@@ -8,7 +8,9 @@ services:
     ports:
       - '8080:3000'
     environment:
-      - PG_DB=music-social
+      - NODE_ENV=docker_development
+      - CLIENT_ORIGIN=http://localhost:3000
+      - PG_DB=music-social-network
       - PG_USER=postgres
       - PG_PASSWORD=12345
       - PG_HOST=db
@@ -22,7 +24,7 @@ services:
     ports:
       - '5432:5432'
     environment:
-      - POSTGRES_DB=music-social
+      - POSTGRES_DB=music-social-network
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=12345
     volumes:

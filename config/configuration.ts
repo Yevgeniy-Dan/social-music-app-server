@@ -3,10 +3,11 @@ export default () => ({
   clientOrigin: process.env.CLIENT_ORIGIN,
   database: {
     host: process.env.PG_HOST,
-    port: parseInt(process.env.PG_PORT, 10) || 5433,
+    port: parseInt(process.env.PG_PORT, 10),
     username: process.env.PG_USER,
     password: process.env.PG_PASSWORD,
     dbName: process.env.PG_DB,
-    synchronize: process.env.NODE_ENV !== 'production',
+    // synchronize: process.env.NODE_ENV !== 'production',
+    synchronize: false,
   },
 });
