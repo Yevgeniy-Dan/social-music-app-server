@@ -8,12 +8,12 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
-  create(createUserInput: CreateUserInput) {
-    return 'This action adds a new user';
-  }
+  // create(createUserInput: CreateUserInput) {
+  //   return 'This action adds a new user';
+  // }
 
   findAll() {
-    return `This action returns all users`;
+    return this.userRepository.find();
   }
 
   findOneById(id: string) {
@@ -22,11 +22,11 @@ export class UsersService {
     });
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
-  }
+  // update(id: number, updateUserInput: UpdateUserInput) {
+  //   return `This action updates a #${id} user`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} user`;
+  // }
 }

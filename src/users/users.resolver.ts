@@ -15,13 +15,13 @@ export class UsersResolver {
   //   return this.usersService.create(createUserInput);
   // }
 
-  // @Query(() => [User], { name: 'users' })
-  // findAll() {
-  //   return this.usersService.findAll();
-  // }
+  @Query(() => [User], { name: 'users' })
+  findAll() {
+    return this.usersService.findAll();
+  }
 
   @Query(() => User, { name: 'user' })
-  getAuthor(@Args('id') id: string) {
+  getUser(@Args('id') id: string) {
     return this.usersService.findOneById(id);
   }
 

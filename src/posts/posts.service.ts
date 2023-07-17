@@ -11,9 +11,9 @@ export class PostsService {
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>
   ) {}
-  create(createPostInput: CreatePostInput) {
-    return 'This action adds a new post';
-  }
+  // create(createPostInput: CreatePostInput) {
+  //   return 'This action adds a new post';
+  // }
 
   async findAllByUserId({ userId }: { userId: string }): Promise<Post[]> {
     return this.postRepository.findBy({ userId });
@@ -23,15 +23,15 @@ export class PostsService {
     return this.postRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  findOne(id: string) {
+    return this.postRepository.findOneBy({ id: id });
   }
 
-  update(id: number, updatePostInput: UpdatePostInput) {
-    return `This action updates a #${id} post`;
-  }
+  // update(id: number, updatePostInput: UpdatePostInput) {
+  //   return `This action updates a #${id} post`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} post`;
+  // }
 }
