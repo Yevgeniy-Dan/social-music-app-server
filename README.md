@@ -10,7 +10,7 @@ This is the server-side application for the Social Music App.
   - [How to Run the App Using Docker](#how-to-run-the-app-using-docker)
     - [Run PostgreSQL in a container](#run-postgresql-in-a-container)
     - [Build and Run the Docker Service](#build-and-run-the-docker-service)
-    - [Test the App with Postman](#test-the-app-with-postman)
+    - [Test the GraphQL App](#test-the-graphql-app)
 
 ## How to Run the App Locally
 
@@ -81,7 +81,7 @@ docker compose logs
 
 You should get an output similar to this one:
 
-![docker-compose-logs](./images/docker-compose-logs.png)
+![docker-compose-logs](./images/docker/docker-compose-logs.png)
 
 If we see "database system is ready to accept connections" we are good to go!
 
@@ -95,7 +95,7 @@ You can use DBeaver or other libraries to connect to postgres docker database wi
    docker compose build
    ```
 
-   ![docker-compose-build](./images/docker-build.png)
+   ![docker-compose-build](./images/docker/docker-build.png)
 
 2. **Start the service:**
 
@@ -104,7 +104,7 @@ You can use DBeaver or other libraries to connect to postgres docker database wi
    ```
 
    This should be the output on the terminal
-   ![docker-compose-up](./images/docker-compose-up.png)
+   ![docker-compose-up](./images/docker/docker-compose-up.png)
 
 3. **Populate the database with dummy data**
 
@@ -130,12 +130,41 @@ You can use DBeaver or other libraries to connect to postgres docker database wi
 
 <!-- This will execute the seed script using the Node.js environment inside the container. -->
 
-### Test the App with Postman
+### Test the GraphQL App
 
-Let's test the app using Postman.
+Open the app at `http://localhost:8080/graphql`
 
-1. Make a GET request to `http://localhost:8080`.
+Here you can view the documentation on requests by clicking on the "Docs" button on the panel on the right side of the page.
 
-2. Make a GET request to `http://localhost:8080/posts`.
+![grahpql-docs](./images/graphql/docs.png)
 
-We should receive an empty array as a response.
+Try to make a couple of queries like
+
+```json
+{
+  users {
+    id
+    name
+    posts {
+      id
+    }
+  }
+}
+```
+
+The result will look like this:
+
+![grahpql-users-request](./images/graphql/users.png)
+
+or
+
+```json
+{
+  post(id:"<post_id_from_db>"){
+    mediaUrl
+    userId
+  }
+}
+```
+
+![grahpql-post-request](./images/graphql/post.png)
