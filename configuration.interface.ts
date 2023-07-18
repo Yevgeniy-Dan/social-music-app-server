@@ -9,4 +9,5 @@ export interface Configuration {
     dbName: string;
     synchronize: boolean;
   };
+  jwt_secret: string;
 }

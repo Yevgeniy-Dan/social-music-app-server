@@ -10,4 +10,5 @@ export default () => ({
     // synchronize: process.env.NODE_ENV !== 'production',
     synchronize: false,
   },
+  jwt_secret: process.env.JWT_SECRET,
 });

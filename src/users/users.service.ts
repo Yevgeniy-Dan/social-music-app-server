@@ -4,29 +4,26 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
+import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
-  // create(createUserInput: CreateUserInput) {
-  //   return 'This action adds a new user';
-  // }
+
+  async create(createUserInput: CreateUserInput) {
+    const user = this.userRepository.create({
+      ...createUserInput,
+    });
+
+    return await this.userRepository.save(user);
+  }
 
   findAll() {
     return this.userRepository.find();
   }
 
-  findOneById(id: string) {
-    return this.userRepository.findOneBy({
-      id,
+  async findOne(username: string) {
+    return await this.userRepository.findOneBy({
+      username,
     });
   }
-
-  // update(id: number, updateUserInput: UpdateUserInput) {
-  //   return `This action updates a #${id} user`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
 }

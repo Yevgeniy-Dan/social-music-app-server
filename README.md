@@ -117,6 +117,7 @@ You can use DBeaver or other libraries to connect to postgres docker database wi
    This command will open a shell session inside the running container.
 
    Make a database migration using the `npm run migration:run` command
+   <!-- npm run migration:generate -- database/migrations/InitialMigration       -->
 
    - Install DBeaver
    - Connect to a database running on a docker container
