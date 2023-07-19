@@ -16,11 +16,14 @@ export class PostsService {
   // }
 
   async findAllByUserId({ userId }: { userId: string }): Promise<Post[]> {
-    return await this.postRepository.find({ where: { user: { id: userId } } });
+    return this.postRepository.find({ where: { user: { id: userId } } });
   }
 
-  async findAll() {
-    return await this.postRepository.find();
+  async findAll({ offset, limit }: { offset: number; limit: number }) {
+    return this.postRepository.find({
+      skip: offset,
+      take: limit,
+    });
   }
 
   findOne(id: string) {

@@ -52,7 +52,7 @@ type Comment {
 type Query {
   users: [User!]!
   user(username: String!): User!
-  posts: [Post!]!
+  posts(page: Int! = 1): [Post!]!
   post(id: String!): Post!
   likes: [Like!]!
   comments: [Comment!]!
