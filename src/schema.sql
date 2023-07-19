@@ -2,6 +2,13 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Like {
+  id: ID!
+  userId: String!
+  postId: String!
+  user: User!
+}
+
 type User {
   id: ID!
   username: String!
@@ -12,6 +19,7 @@ type User {
   education: String
   posts: [Post!]!
   likes: [Like]!
+  comments: [Comment]!
   password: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -22,11 +30,13 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Like {
+type Comment {
   id: ID!
   userId: String!
-  postId: String!
   user: User!
+  postId: String!
+  post: Post!
+  content: String!
 }
 
 type Post {
@@ -35,6 +45,7 @@ type Post {
   userId: String!
   user: User!
   likes: [Like!]!
+  comments: [Comment]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -42,11 +53,6 @@ type Post {
 type LoginResponse {
   access_token: String!
   user: User!
-}
-
-type Comment {
-  """Example field (placeholder)"""
-  exampleField: Int!
 }
 
 type Query {

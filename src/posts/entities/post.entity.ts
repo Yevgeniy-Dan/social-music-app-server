@@ -1,4 +1,5 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
+import { Comment } from 'src/comments/entities/comment.entity';
 import { Like } from 'src/likes/entities/like.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
@@ -27,13 +28,17 @@ export class Post {
   @Field()
   userId: string;
 
-  @ManyToOne((type) => User, (user) => user.posts)
+  @ManyToOne((type) => User, (user) => user.posts, { onDelete: 'CASCADE' })
   @Field(() => User)
   user: User;
 
   @OneToMany(() => Like, (like) => like.post, { cascade: true })
   @Field((type) => [Like], { nullable: 'items' })
   likes?: Like[];
+
+  @OneToMany(() => Comment, (comment) => comment.post)
+  @Field((type) => [Comment], { nullable: 'items' })
+  comments?: Comment[];
 
   @CreateDateColumn({ type: 'timestamp' })
   @Field()
