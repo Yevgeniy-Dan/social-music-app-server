@@ -20,7 +20,7 @@ import configuration from '../../config/configuration';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        signOptions: { expiresIn: '60s' },
+        signOptions: { expiresIn: '60m' },
         secret: config().jwt_secret,
       }),
       inject: [ConfigService],

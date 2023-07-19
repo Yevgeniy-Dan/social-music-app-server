@@ -15,13 +15,13 @@ export class UsersResolver {
   @Query(() => [User], { name: 'users' })
   // @UseGuards(JwtAuthGuard)
   findAll(@Context() context) {
-    console.log(context.req.user);
+    // console.log(context.req.user);
     return this.usersService.findAll();
   }
 
   @Query(() => User, { name: 'user' })
   getUser(@Args('username') username: string) {
-    return this.usersService.findOne(username);
+    return this.usersService.getUserByName(username);
   }
 
   @ResolveField('posts', () => [Post])

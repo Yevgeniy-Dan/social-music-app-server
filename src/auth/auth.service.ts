@@ -10,7 +10,7 @@ export class AuthService {
   constructor(private usersService: UsersService, private jwtService: JwtService) {}
 
   async validateUser(username: string, password: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
+    const user = await this.usersService.getUserByName(username);
 
     const valid = await bcrypt.compare(password, user?.password);
 
@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   async signup(loginUserInput: LoginUserInput) {
-    const user = await this.usersService.findOne(loginUserInput.username);
+    const user = await this.usersService.getUserByName(loginUserInput.username);
 
     if (user) {
       throw new Error('User aldready exists');

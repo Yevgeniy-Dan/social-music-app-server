@@ -16,11 +16,11 @@ export class PostsService {
   // }
 
   async findAllByUserId({ userId }: { userId: string }): Promise<Post[]> {
-    return this.postRepository.findBy({ userId });
+    return await this.postRepository.find({ where: { user: { id: userId } } });
   }
 
   async findAll() {
-    return this.postRepository.find();
+    return await this.postRepository.find();
   }
 
   findOne(id: string) {
