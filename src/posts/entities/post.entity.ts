@@ -18,6 +18,7 @@ export class Post {
   userId: string;
 
   @ManyToOne((type) => User, (user) => user.posts)
+  @Field(() => User)
   user: User;
 
   @CreateDateColumn({ type: 'timestamp' })

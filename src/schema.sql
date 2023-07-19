@@ -25,6 +25,7 @@ type Post {
   id: ID!
   mediaUrl: String!
   userId: String!
+  user: User!
   createdAt: DateTime!
   updatedAt: DateTime!
 }

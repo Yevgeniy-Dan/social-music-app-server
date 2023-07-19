@@ -13,7 +13,7 @@ export class UsersResolver {
   constructor(private readonly usersService: UsersService, private readonly postsService: PostsService) {}
 
   @Query(() => [User], { name: 'users' })
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   findAll(@Context() context) {
     console.log(context.req.user);
     return this.usersService.findAll();
