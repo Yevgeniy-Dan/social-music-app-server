@@ -1,6 +1,14 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { ReplyTo } from './replyto.entity';
 import { Post } from 'src/posts/entities/post.entity';
 
@@ -33,4 +41,12 @@ export class Comment {
   @Column()
   @Field()
   content: string;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  @Field()
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  @Field()
+  updatedAt: Date;
 }

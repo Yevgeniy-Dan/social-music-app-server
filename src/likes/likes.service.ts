@@ -20,19 +20,19 @@ export class LikesService {
   //   return 'This action adds a new like';
   // }
   async findAllByUserId({ userId }: { userId: string }): Promise<Like[]> {
-    return await this.likeRepository.find({ where: { user: { id: userId } } });
+    return this.likeRepository.find({ where: { user: { id: userId } } });
   }
 
   async findAllByPostId({ postId: postId }: { postId: string }): Promise<Like[]> {
-    return await this.likeRepository.find({ where: { post: { id: postId } } });
+    return this.likeRepository.find({ where: { post: { id: postId } } });
   }
 
   async findAll() {
-    return await this.likeRepository.find();
+    return this.likeRepository.find();
   }
 
   async findOne(id: string) {
-    return await this.likeRepository.find({ where: { id: id } });
+    return this.likeRepository.find({ where: { id: id } });
   }
 
   // update(id: number, updateLikeInput: UpdateLikeInput) {

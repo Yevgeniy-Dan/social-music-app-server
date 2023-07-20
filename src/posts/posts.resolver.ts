@@ -8,22 +8,29 @@ import { LikesService } from 'src/likes/likes.service';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { PaginationArgs } from './dto/pagination.args';
+import { Comment } from 'src/comments/entities/comment.entity';
+import { CommentsService } from 'src/comments/comments.service';
+import { CommentTreeService } from 'config/initializeCommentTree';
 
 @Resolver(() => Post)
 export class PostsResolver {
-  private readonly PER_PAGE = 100;
+  private readonly POSTS_PER_PAGE = 100;
+  private readonly COMMENTS_PER_PAGE = 100;
+
   constructor(
     private readonly postsService: PostsService,
     private readonly likesService: LikesService,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly commentsService: CommentsService,
+    private readonly commentTreeService: CommentTreeService
   ) {}
 
   @Query(() => [Post], { name: 'posts' })
   async findAll(@Args() args: PaginationArgs): Promise<Post[]> {
     const { page } = args;
-    const offset = (page - 1) * this.PER_PAGE;
+    const offset = (page - 1) * this.POSTS_PER_PAGE;
 
-    return this.postsService.findAll({ limit: this.PER_PAGE, offset });
+    return this.postsService.findAll({ limit: this.POSTS_PER_PAGE, offset });
   }
 
   @Query(() => Post, { name: 'post' })
@@ -40,5 +47,23 @@ export class PostsResolver {
   getLikes(@Parent() post: Post) {
     const { id } = post;
     return this.likesService.findAllByPostId({ postId: id });
+  }
+
+  @ResolveField('comments', () => [Comment])
+  async getComments(@Parent() post: Post, @Args() args: PaginationArgs) {
+    const { page } = args;
+
+    const comments = await this.commentsService.findAllByPostId(post.id);
+
+    await this.commentTreeService.initializeCommentTree(comments);
+
+    const sortedComments = this.commentTreeService.getCommentTree().sort();
+
+    const skippedComments = (page - 1) * this.COMMENTS_PER_PAGE;
+    const paginatedComments = sortedComments.slice(skippedComments, this.COMMENTS_PER_PAGE * page);
+
+    console.log(paginatedComments.length);
+
+    return paginatedComments;
   }
 }

@@ -16,6 +16,7 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { LikesModule } from './likes/likes.module';
 import { CommentsModule } from './comments/comments.module';
+import { CommentTreeService } from 'config/initializeCommentTree';
 
 @Module({
   imports: [
@@ -50,6 +51,6 @@ import { CommentsModule } from './comments/comments.module';
     CommentsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CommentTreeService],
 })
 export class AppModule {}

@@ -23,6 +23,7 @@ type User {
   password: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  refreshToken: String
 }
 
 """
@@ -37,6 +38,8 @@ type Comment {
   postId: String!
   post: Post!
   content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Post {
@@ -45,13 +48,14 @@ type Post {
   userId: String!
   user: User!
   likes: [Like!]!
-  comments: [Comment]!
+  comments(page: Int! = 1): [Comment!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
 
-type LoginResponse {
+type SignResponse {
   access_token: String!
+  refresh_token: String!
   user: User!
 }
 
@@ -61,16 +65,11 @@ type Query {
   posts(page: Int! = 1): [Post!]!
   post(id: String!): Post!
   likes: [Like!]!
-  comments: [Comment!]!
-  comment(id: Int!): Comment!
 }
 
 type Mutation {
-  login(loginUserInput: LoginUserInput!): LoginResponse!
-  signup(loginUserInput: LoginUserInput!): User!
-  createComment(createCommentInput: CreateCommentInput!): Comment!
-  updateComment(updateCommentInput: UpdateCommentInput!): Comment!
-  removeComment(id: Int!): Comment!
+  login(loginUserInput: LoginUserInput!): SignResponse!
+  signup(signupUserInput: SignUpUserInput!): SignResponse!
 }
 
 input LoginUserInput {
@@ -78,13 +77,7 @@ input LoginUserInput {
   password: String!
 }
 
-input CreateCommentInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateCommentInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+input SignUpUserInput {
+  username: String!
+  password: String!
 }

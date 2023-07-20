@@ -6,7 +6,7 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { PostsService } from 'src/posts/posts.service';
 import { Post } from 'src/posts/entities/post.entity';
 import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Resolver(() => User)
 export class UsersResolver {

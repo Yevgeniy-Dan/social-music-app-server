@@ -1,6 +1,6 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { Comment } from 'src/comments/entities/comment.entity';
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -9,8 +9,16 @@ export class ReplyTo {
   @Field(() => ID)
   id: string;
 
+  @Column()
+  @Field()
+  parentId: string;
+
   @ManyToOne(() => Comment, (comment) => comment.replies)
   parent: Comment;
+
+  @Column()
+  @Field()
+  replyId: string;
 
   @ManyToOne(() => Comment, (comment) => comment.replies)
   reply: Comment;

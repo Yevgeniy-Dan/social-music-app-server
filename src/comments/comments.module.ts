@@ -8,5 +8,6 @@ import { ReplyTo } from './entities/replyto.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Comment, ReplyTo])],
   providers: [CommentsResolver, CommentsService],
+  exports: [TypeOrmModule, CommentsService],
 })
 export class CommentsModule {}
