@@ -1,4 +1,4 @@
-// import { gql } from '@apollo/client';
+import { gql } from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -8,74 +8,117 @@ export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> =
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string };
-  String: { input: string; output: string };
-  Boolean: { input: boolean; output: boolean };
-  Int: { input: number; output: number };
-  Float: { input: number; output: number };
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  DateTime: { input: any; output: any; }
 };
 
-export type CreatePostInput = {
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['input'];
+export type Comment = {
+  __typename?: 'Comment';
+  content: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  post: Post;
+  postId: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  user: User;
+  userId: Scalars['String']['output'];
+};
+
+export type Like = {
+  __typename?: 'Like';
+  id: Scalars['ID']['output'];
+  postId: Scalars['String']['output'];
+  user: User;
+  userId: Scalars['String']['output'];
+};
+
+export type LoginResponse = {
+  __typename?: 'LoginResponse';
+  access_token: Scalars['String']['output'];
+  user: User;
+};
+
+export type LoginUserInput = {
+  password: Scalars['String']['input'];
+  username: Scalars['String']['input'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createPost: Post;
-  removePost: Post;
-  updatePost: Post;
+  login: LoginResponse;
+  signup: User;
 };
 
-export type MutationCreatePostArgs = {
-  createPostInput: CreatePostInput;
+
+export type MutationLoginArgs = {
+  loginUserInput: LoginUserInput;
 };
 
-export type MutationRemovePostArgs = {
-  id: Scalars['Int']['input'];
-};
 
-export type MutationUpdatePostArgs = {
-  updatePostInput: UpdatePostInput;
+export type MutationSignupArgs = {
+  loginUserInput: LoginUserInput;
 };
 
 export type Post = {
   __typename?: 'Post';
+  comments: Array<Comment>;
+  createdAt: Scalars['DateTime']['output'];
   id: Scalars['ID']['output'];
+  likes: Array<Like>;
   mediaUrl: Scalars['String']['output'];
+  totalComments: Scalars['Int']['output'];
+  totalLikes: Scalars['Int']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  user: User;
   userId: Scalars['String']['output'];
+};
+
+
+export type PostCommentsArgs = {
+  page?: Scalars['Int']['input'];
 };
 
 export type Query = {
   __typename?: 'Query';
+  likes: Array<Like>;
   post: Post;
   posts: Array<Post>;
   user: User;
   users: Array<User>;
 };
 
+
 export type QueryPostArgs = {
   id: Scalars['String']['input'];
 };
 
-export type QueryUserArgs = {
-  id: Scalars['String']['input'];
+
+export type QueryPostsArgs = {
+  page?: Scalars['Int']['input'];
 };
 
-export type UpdatePostInput = {
-  /** Example field (placeholder) */
-  exampleField?: InputMaybe<Scalars['Int']['input']>;
-  id: Scalars['Int']['input'];
+
+export type QueryUserArgs = {
+  username: Scalars['String']['input'];
 };
 
 export type User = {
   __typename?: 'User';
-  avatar: Scalars['String']['output'];
-  bio: Scalars['String']['output'];
-  education: Scalars['String']['output'];
+  avatar?: Maybe<Scalars['String']['output']>;
+  bio?: Maybe<Scalars['String']['output']>;
+  comments: Array<Maybe<Comment>>;
+  createdAt: Scalars['DateTime']['output'];
+  education?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
-  musicGenres: Scalars['String']['output'];
-  name: Scalars['String']['output'];
+  likes: Array<Maybe<Like>>;
+  musicGenres?: Maybe<Scalars['String']['output']>;
+  password: Scalars['String']['output'];
   posts: Array<Post>;
-  socialMedia: Scalars['String']['output'];
+  socialMedia?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+  username: Scalars['String']['output'];
 };
