@@ -1,4 +1,4 @@
-import { Resolver, Query, Args, ResolveField, Parent } from '@nestjs/graphql';
+import { Resolver, Query, Args, ResolveField, Parent, Int } from '@nestjs/graphql';
 import { PostsService } from './posts.service';
 import { Post } from './entities/post.entity';
 // import { CreatePostInput } from './dto/create-post.input';
@@ -11,6 +11,8 @@ import { PaginationArgs } from './dto/pagination.args';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { CommentsService } from 'src/comments/comments.service';
 import { CommentTreeService } from 'config/initializeCommentTree';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
 
 @Resolver(() => Post)
 export class PostsResolver {
@@ -49,7 +51,22 @@ export class PostsResolver {
     return this.likesService.findAllByPostId({ postId: id });
   }
 
+  @ResolveField('totalLikes', () => Int)
+  async getTotalLikes(@Parent() post: Post) {
+    const { id } = post;
+    const likes = await this.likesService.findAllByPostId({ postId: id });
+    return likes.length;
+  }
+
+  @ResolveField('totalComments', () => Int)
+  async getTotalComments(@Parent() post: Post) {
+    const { id } = post;
+    const comments = await this.commentsService.findAllByPostId(id);
+    return comments.length;
+  }
+
   @ResolveField('comments', () => [Comment])
+  @UseGuards(JwtAuthGuard)
   async getComments(@Parent() post: Post, @Args() args: PaginationArgs) {
     const { page } = args;
 
@@ -61,8 +78,6 @@ export class PostsResolver {
 
     const skippedComments = (page - 1) * this.COMMENTS_PER_PAGE;
     const paginatedComments = sortedComments.slice(skippedComments, this.COMMENTS_PER_PAGE * page);
-
-    console.log(paginatedComments.length);
 
     return paginatedComments;
   }

@@ -9,6 +9,6 @@ import { PostsService } from 'src/posts/posts.service';
 @Module({
   imports: [TypeOrmModule.forFeature([User]), forwardRef(() => PostsModule)],
   providers: [UsersResolver, UsersService, PostsService],
-  exports: [UsersService],
+  exports: [TypeOrmModule, UsersService],
 })
 export class UsersModule {}

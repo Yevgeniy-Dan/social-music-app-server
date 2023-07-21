@@ -10,5 +10,4 @@ export interface Configuration {
     synchronize: boolean;
   };
   jwt_secret: string;
-  jwt_refresh_secret: string;
 }

@@ -6,14 +6,14 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { PostsService } from 'src/posts/posts.service';
 import { Post } from 'src/posts/entities/post.entity';
 import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Resolver(() => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService, private readonly postsService: PostsService) {}
 
   @Query(() => [User], { name: 'users' })
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   findAll(@Context() context) {
     // console.log(context.req.user);
     return this.usersService.findAll();

@@ -22,9 +22,15 @@ export class UsersService {
   }
 
   async getUserByName(username: string) {
-    return await this.userRepository.findOneBy({
+    const user = await this.userRepository.findOneBy({
       username,
     });
+
+    if (!user) {
+      throw new Error('User does not exists.');
+    }
+
+    return user;
   }
 
   async findUserById(userId: string): Promise<User> {

@@ -23,7 +23,6 @@ type User {
   password: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  refreshToken: String
 }
 
 """
@@ -51,11 +50,12 @@ type Post {
   comments(page: Int! = 1): [Comment!]!
   createdAt: DateTime!
   updatedAt: DateTime!
+  totalLikes: Int!
+  totalComments: Int!
 }
 
-type SignResponse {
+type LoginResponse {
   access_token: String!
-  refresh_token: String!
   user: User!
 }
 
@@ -68,16 +68,11 @@ type Query {
 }
 
 type Mutation {
-  login(loginUserInput: LoginUserInput!): SignResponse!
-  signup(signupUserInput: SignUpUserInput!): SignResponse!
+  login(loginUserInput: LoginUserInput!): LoginResponse!
+  signup(loginUserInput: LoginUserInput!): User!
 }
 
 input LoginUserInput {
-  username: String!
-  password: String!
-}
-
-input SignUpUserInput {
   username: String!
   password: String!
 }
