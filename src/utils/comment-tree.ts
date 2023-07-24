@@ -36,13 +36,13 @@ export class CommentTree {
     this.replyIds = new Set<ReplySet>();
   }
 
-  addComment(comment: IComment) {
+  addComment = (comment: IComment) => {
     const item = getObjectWithIdInReplySet(this.replyIds, comment.id);
     comment = { ...comment, parentId: item?.parentId };
     this.comments.set(comment, new Set<IComment>());
-  }
+  };
 
-  removeComment(commentId: string) {
+  removeComment = (commentId: string) => {
     const childComments = this.comments.getById(commentId);
 
     if (childComments && childComments.size > 0) {
@@ -61,25 +61,25 @@ export class CommentTree {
       childCommentsSet.delete(deleteCommentInSet);
     }
     this.deleteReplyIdObj(commentId);
-  }
+  };
 
-  addReplyIdObj(parentId: string, replyId: string) {
+  addReplyIdObj = (parentId: string, replyId: string) => {
     if (!parentId || !replyId) {
       throw new Error('Both parentId and replyId must be provided.');
     }
     this.replyIds.add({ parentId, replyId });
-  }
+  };
 
-  deleteReplyIdObj(id: string) {
+  deleteReplyIdObj = (id: string) => {
     for (const value of this.replyIds) {
       if (value.replyId === id) {
         this.replyIds.delete(value);
         break;
       }
     }
-  }
+  };
 
-  addEdge(parentId: string, childId: string) {
+  addEdge = (parentId: string, childId: string) => {
     if (!this.comments.hasById(parentId) || !this.comments.hasById(childId)) {
       throw new Error('One of the comment does not exist anymore.');
     }
@@ -87,9 +87,9 @@ export class CommentTree {
     const childObj = this.comments.getKeyById(childId);
 
     this.comments.getById(parentId).add(childObj);
-  }
+  };
 
-  sort(): IComment[] {
+  sort = (): IComment[] => {
     const comments = CommentTree.sortComments(this.comments);
 
     // Create a map of each object's dependecies
@@ -117,12 +117,13 @@ export class CommentTree {
     for (const c of parentComments) {
       result.push(c);
       if (dependencies.has(c.id)) {
-        result.push(...dependencies.get(c.id));
+        const sortedChildren = CommentTree.sortByDate([...dependencies.get(c.id)], 'asc');
+        result.push(...sortedChildren);
       }
     }
 
     return result;
-  }
+  };
 
   static sortComments(comments: CommentMap): IComment[] {
     const visited = {};

@@ -10,17 +10,17 @@ export class CommentTreeService {
   private commentTree: CommentTree;
 
   constructor(
-    @InjectRepository(Comment) private commentRepository: Repository<Comment>,
+    // @InjectRepository(Comment) private commentRepository: Repository<Comment>,
     @InjectRepository(ReplyTo) private replyToRepository: Repository<ReplyTo>
-  ) {
-    this.commentTree = new CommentTree();
-  }
+  ) {}
 
-  async initializeCommentTree(comments: Comment[]): Promise<boolean> {
+  async initializeCommentTree(comments: Comment[]): Promise<CommentTree> {
     // const [comments, replies] = await Promise.all([this.commentRepository.find(), this.replyToRepository.find()]);
 
     // if the order in which the queries are executed is important
     //   const comments = await Comment.find();
+
+    this.commentTree = new CommentTree();
     const replies = await this.replyToRepository.find();
 
     for (const r of replies) {
@@ -37,7 +37,7 @@ export class CommentTreeService {
       this.commentTree.addEdge(r.parentId, r.replyId);
     }
 
-    return true;
+    return this.commentTree;
   }
   getCommentTree(): CommentTree {
     return this.commentTree;

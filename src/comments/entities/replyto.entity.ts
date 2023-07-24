@@ -9,6 +9,7 @@ export class ReplyTo {
   @Field(() => ID)
   id: string;
 
+  //TODO: Constraint key: parentId && replyId is UNIQUE
   @Column()
   @Field()
   parentId: string;

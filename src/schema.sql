@@ -47,11 +47,21 @@ type Post {
   userId: String!
   user: User!
   likes: [Like!]!
-  comments(page: Int! = 1): [Comment!]!
+  comments: [CommentResponse!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   totalLikes: Int!
   totalComments: Int!
+}
+
+type CommentResponse {
+  id: String!
+  user: User!
+  parentId: String
+  post: Post!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type LoginResponse {
@@ -68,8 +78,15 @@ type Query {
 }
 
 type Mutation {
+  createCommentOnPost(createCommentInput: CreateCommentInput!): Comment!
   login(loginUserInput: LoginUserInput!): LoginResponse!
   signup(loginUserInput: LoginUserInput!): User!
+}
+
+input CreateCommentInput {
+  postId: String!
+  content: String!
+  parentId: String
 }
 
 input LoginUserInput {
