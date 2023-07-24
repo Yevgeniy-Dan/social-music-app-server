@@ -17,6 +17,8 @@ import { CreatePostInput } from './dto/create-post.input';
 import { CreateCommentInput } from 'src/comments/dto/create-comment.input';
 import { CommentTree, IComment } from 'src/utils/comment-tree';
 import { CommentResponse } from 'src/comments/dto/comment-response';
+import { CreateLikeInput } from 'src/likes/dto/create-like.input';
+import { RemoveLikeResponse } from 'src/likes/dto/remove-like-response';
 
 @Resolver(() => Post)
 export class PostsResolver {
@@ -88,19 +90,8 @@ export class PostsResolver {
     return comments;
   }
 
-  async getWithParent(comments: IComment[]) {
-    const data = await Promise.all(
-      comments.map(async (comment) => {
-        const parent = await this.usersService.findUserById(comment.parentId);
-        return { ...comment, parentUser: parent };
-      })
-    );
-
-    return data;
-  }
-
   @UseGuards(JwtAuthGuard)
-  @Mutation(() => Comment, { name: 'createCommentOnPost' })
+  @Mutation(() => Comment, { name: 'createComment' })
   async createCommentOnPost(@Context() context, @Args('createCommentInput') args: CreateCommentInput) {
     const { userId } = context.req.user;
     const comment = await this.commentsService.createComment(
@@ -125,8 +116,30 @@ export class PostsResolver {
       addComment(comment);
     }
 
-    // console.log(this.commentTreeSet.get(comment.postId));
-
     return comment;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => Like, { name: 'createLike' })
+  async createLike(@Context() context, @Args('postId') postId: string) {
+    const { userId } = context.req.user;
+
+    return this.likesService.create({
+      postId,
+      userId,
+    });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => Like, { name: 'removeLike' })
+  async removeLike(@Context() context, @Args('postId') postId: string) {
+    const { userId } = context.req.user;
+
+    const isRemove = await this.likesService.remove({
+      userId,
+      postId,
+    });
+
+    return isRemove;
   }
 }

@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like } from './entities/like.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { RemoveLikeResponse } from './dto/remove-like-response';
 
 @Injectable()
 export class LikesService {
@@ -12,13 +13,22 @@ export class LikesService {
     @InjectRepository(Like)
     private readonly likeRepository: Repository<Like>
   ) {}
-  //TODO: Don't forget below by creating like
-  //  async findByUserAndPost(userId: number, postId: number): Promise<Like | null> {
-  //   return this.likeRepository.findOne({ where: { userId, postId } });
-  // }
-  // create(createLikeInput: CreateLikeInput) {
-  //   return 'This action adds a new like';
-  // }
+
+  async create(createLikeInput: CreateLikeInput): Promise<Like> {
+    const { postId, userId } = createLikeInput;
+
+    const isExist = await this.likeRepository.findOne({ where: { userId, postId } });
+
+    if (isExist) {
+      throw new Error('Like already on this post');
+    }
+
+    const like = this.likeRepository.create({
+      ...createLikeInput,
+    });
+
+    return await this.likeRepository.save(like);
+  }
   async findAllByUserId({ userId }: { userId: string }): Promise<Like[]> {
     return this.likeRepository.find({ where: { user: { id: userId } } });
   }
@@ -39,7 +49,14 @@ export class LikesService {
   //   return `This action updates a #${id} like`;
   // }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} like`;
-  // }
+  async remove(likeInput: CreateLikeInput) {
+    const { userId, postId } = likeInput;
+    const like = await this.likeRepository.findOne({ where: { userId, postId } });
+
+    if (!like) {
+      throw new Error('Like not found.');
+    }
+
+    return await this.likeRepository.remove(like);
+  }
 }

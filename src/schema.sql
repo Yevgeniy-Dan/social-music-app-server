@@ -78,7 +78,9 @@ type Query {
 }
 
 type Mutation {
-  createCommentOnPost(createCommentInput: CreateCommentInput!): Comment!
+  createComment(createCommentInput: CreateCommentInput!): Comment!
+  createLike(postId: String!): Like!
+  removeLike(postId: String!): Like!
   login(loginUserInput: LoginUserInput!): LoginResponse!
   signup(loginUserInput: LoginUserInput!): User!
 }
