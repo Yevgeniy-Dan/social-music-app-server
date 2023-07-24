@@ -28,17 +28,20 @@ export class AuthService {
   }
 
   async signup(loginUserInput: LoginUserInput) {
-    const user = await this.usersService.getUserByName(loginUserInput.username);
+    try {
+      const user = await this.usersService.getUserByName(loginUserInput.username); //TODO: Change 'getUserByName' method logic
+      if (user) {
+        throw new Error('User aldready exists');
+      }
+    } catch (error) {
+      if (error !== 'User aldready exists') {
+        const password = await bcrypt.hash(loginUserInput.password, 10);
 
-    if (user) {
-      throw new Error('User aldready exists');
+        return await this.usersService.create({
+          ...loginUserInput,
+          password,
+        });
+      }
     }
-
-    const password = await bcrypt.hash(loginUserInput.password, 10);
-
-    return await this.usersService.create({
-      ...loginUserInput,
-      password,
-    });
   }
 }

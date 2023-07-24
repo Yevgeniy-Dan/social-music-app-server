@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+// import { gql } from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -8,12 +8,12 @@ export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> =
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
-  DateTime: { input: any; output: any; }
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
+  DateTime: { input: any; output: any };
 };
 
 export type Comment = {
@@ -73,26 +73,21 @@ export type Mutation = {
   signup: User;
 };
 
-
 export type MutationCreateCommentArgs = {
   createCommentInput: CreateCommentInput;
 };
-
 
 export type MutationCreateLikeArgs = {
   postId: Scalars['String']['input'];
 };
 
-
 export type MutationLoginArgs = {
   loginUserInput: LoginUserInput;
 };
 
-
 export type MutationRemoveLikeArgs = {
   postId: Scalars['String']['input'];
 };
-
 
 export type MutationSignupArgs = {
   loginUserInput: LoginUserInput;
@@ -121,16 +116,13 @@ export type Query = {
   users: Array<User>;
 };
 
-
 export type QueryPostArgs = {
   id: Scalars['String']['input'];
 };
 
-
 export type QueryPostsArgs = {
   page?: Scalars['Int']['input'];
 };
-
 
 export type QueryUserArgs = {
   username: Scalars['String']['input'];
