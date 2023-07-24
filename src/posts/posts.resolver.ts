@@ -22,7 +22,7 @@ import { RemoveLikeResponse } from 'src/likes/dto/remove-like-response';
 
 @Resolver(() => Post)
 export class PostsResolver {
-  private readonly POSTS_PER_PAGE = 20;
+  private readonly POSTS_PER_PAGE = 15;
   private readonly commentTreeSet: Map<string, CommentTree> = new Map<string, CommentTree>();
 
   constructor(
