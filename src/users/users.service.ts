@@ -5,6 +5,7 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import { UserNotFoundError } from 'src/auth/errors/UserNotFoundError';
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
@@ -21,13 +22,13 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  async getUserByName(username: string) {
+  async getUserByName(username: string): Promise<User> {
     const user = await this.userRepository.findOneBy({
       username,
     });
 
     if (!user) {
-      throw new Error('User does not exists.');
+      throw new UserNotFoundError('User with the provided username not found.');
     }
 
     return user;

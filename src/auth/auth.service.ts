@@ -4,6 +4,7 @@ import { LoginUserInput } from './dto/login-user.input';
 import { User } from 'src/users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { UserNotFoundError } from './errors/UserNotFoundError';
 
 @Injectable()
 export class AuthService {
@@ -27,14 +28,14 @@ export class AuthService {
     };
   }
 
-  async signup(loginUserInput: LoginUserInput) {
+  async signup(loginUserInput: LoginUserInput): Promise<User> {
     try {
       const user = await this.usersService.getUserByName(loginUserInput.username); //TODO: Change 'getUserByName' method logic
       if (user) {
         throw new Error('User aldready exists');
       }
     } catch (error) {
-      if (error !== 'User aldready exists') {
+      if (error instanceof UserNotFoundError) {
         const password = await bcrypt.hash(loginUserInput.password, 10);
 
         return await this.usersService.create({
@@ -42,6 +43,8 @@ export class AuthService {
           password,
         });
       }
+
+      throw error;
     }
   }
 }

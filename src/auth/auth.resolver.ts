@@ -5,6 +5,7 @@ import { LoginUserInput } from './dto/login-user.input';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from './gql-auth.guard';
 import { User } from 'src/users/entities/user.entity';
+import { SignUpResponse } from './dto/signup-response';
 
 @Resolver()
 export class AuthResolver {
@@ -17,7 +18,20 @@ export class AuthResolver {
   }
 
   @Mutation(() => User)
-  signup(@Args('loginUserInput') loginUserInput: LoginUserInput) {
-    return this.authService.signup(loginUserInput);
+  async signup(@Args('loginUserInput') loginUserInput: LoginUserInput): Promise<SignUpResponse> {
+    try {
+      await this.authService.signup(loginUserInput);
+
+      return {
+        success: true,
+        message: 'User was sucessfully signup.',
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Something went wrong',
+        error: error,
+      };
+    }
   }
 }
