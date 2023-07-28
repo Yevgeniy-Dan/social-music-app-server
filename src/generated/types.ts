@@ -24,7 +24,7 @@ export type Comment = {
   post: Post;
   postId: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
-  user: User;
+  user: UserResponse;
   userId: Scalars['String']['output'];
 };
 
@@ -36,7 +36,7 @@ export type CommentResponse = {
   parentId?: Maybe<Scalars['String']['output']>;
   post: Post;
   updatedAt: Scalars['DateTime']['output'];
-  user: User;
+  user: UserResponse;
 };
 
 export type CreateCommentInput = {
@@ -49,14 +49,25 @@ export type Like = {
   __typename?: 'Like';
   id: Scalars['ID']['output'];
   postId: Scalars['String']['output'];
-  user: User;
+  user: UserResponse;
   userId: Scalars['String']['output'];
 };
 
 export type LoginResponse = {
   __typename?: 'LoginResponse';
-  access_token: Scalars['String']['output'];
-  user: User;
+  accessToken: Scalars['String']['output'];
+  refreshToken: Scalars['String']['output'];
+  user: UserResponse;
+};
+
+export type LoginUserInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+export type LogoutResponse = {
+  __typename?: 'LogoutResponse';
+  token: Scalars['String']['output'];
 };
 
 export type Mutation = {
@@ -64,8 +75,10 @@ export type Mutation = {
   createComment: Comment;
   createLike: Like;
   login: LoginResponse;
+  logout: LogoutResponse;
+  refresh: LoginResponse;
   removeLike: Like;
-  signup: User;
+  signup: SignUpResponse;
 };
 
 export type MutationCreateCommentArgs = {
@@ -77,7 +90,7 @@ export type MutationCreateLikeArgs = {
 };
 
 export type MutationLoginArgs = {
-  loginUserInput: SignUserInput;
+  loginUserInput: LoginUserInput;
 };
 
 export type MutationRemoveLikeArgs = {
@@ -123,7 +136,15 @@ export type QueryUserArgs = {
   username: Scalars['String']['input'];
 };
 
+export type SignUpResponse = {
+  __typename?: 'SignUpResponse';
+  accessToken: Scalars['String']['output'];
+  refreshToken: Scalars['String']['output'];
+  user: UserResponse;
+};
+
 export type SignUserInput = {
+  email: Scalars['String']['input'];
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
 };
@@ -145,5 +166,18 @@ export type User = {
   posts: Array<Post>;
   socialMedia?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
+  username: Scalars['String']['output'];
+};
+
+export type UserResponse = {
+  __typename?: 'UserResponse';
+  avatar?: Maybe<Scalars['String']['output']>;
+  bio?: Maybe<Scalars['String']['output']>;
+  education?: Maybe<Scalars['String']['output']>;
+  email: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  isActivated: Scalars['Boolean']['output'];
+  musicGenres?: Maybe<Scalars['String']['output']>;
+  socialMedia?: Maybe<Scalars['String']['output']>;
   username: Scalars['String']['output'];
 };
