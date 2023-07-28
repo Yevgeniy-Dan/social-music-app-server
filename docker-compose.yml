@@ -16,6 +16,12 @@ services:
       - PG_HOST=db
       - PG_PORT=5432
       - JWT_ACCESS_SECRET=EJmVoJU6jzo7cLkJztS1gOOyXVvNkn05KDbxuhAJ4tizs77QSG
+      - JWT_REFRESH_SECRET=some_jwt__refresh_secret
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_USER=socialmusicapp23@gmail.com
+      - SMTP_PASSWORD=
+      - API_URL=http://localhost:8080
     depends_on:
       - db
 
