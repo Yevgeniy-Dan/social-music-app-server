@@ -5,6 +5,7 @@ import { Like } from './entities/like.entity';
 // import { UpdateLikeInput } from './dto/update-like.input';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
+import { UserResponse } from 'src/auth/dto/user-response';
 
 @Resolver(() => Like)
 export class LikesResolver {
@@ -15,8 +16,8 @@ export class LikesResolver {
     return this.likesService.findAll();
   }
 
-  @ResolveField(() => User, { name: 'user' })
-  async getUser(@Parent() like: Like): Promise<User> {
+  @ResolveField(() => UserResponse, { name: 'user' })
+  async getUser(@Parent() like: Like) {
     return await this.usersService.findUserById(like.userId);
   }
 }

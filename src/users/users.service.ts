@@ -6,6 +6,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { UserNotFoundError } from 'src/auth/errors/UserNotFoundError';
+import { plainToClass } from 'class-transformer';
+import { UserResponse } from 'src/auth/dto/user-response';
+
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
@@ -18,14 +21,17 @@ export class UsersService {
       activationLink,
     });
 
-    return await this.userRepository.save(user);
+    const savedUser = await this.userRepository.save(user);
+    const { password, ...result } = savedUser;
+
+    return result;
   }
 
   findAll() {
     return this.userRepository.find();
   }
 
-  async getUserByName(username: string): Promise<User> {
+  async getUserByName(username: string): Promise<UserResponse> {
     const user = await this.userRepository.findOneBy({
       username,
     });
@@ -34,7 +40,8 @@ export class UsersService {
       throw new UserNotFoundError('User with the provided username not found.');
     }
 
-    return user;
+    const { password, ...result } = user;
+    return result;
   }
 
   async getUserByEmail(email: string): Promise<User> {
@@ -47,10 +54,13 @@ export class UsersService {
     return user;
   }
 
-  async findUserById(userId: string): Promise<User> {
-    return await this.userRepository.findOneBy({
+  async findUserById(userId: string) {
+    const user = await this.userRepository.findOneBy({
       id: userId,
     });
+
+    const { password, ...result } = user;
+    return result;
   }
 
   async updateUserById(userId: string, fieldToUpdate: string, newValue: any): Promise<User> {

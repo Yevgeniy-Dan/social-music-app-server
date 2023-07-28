@@ -60,9 +60,7 @@ export class AuthResolver {
       return {
         accessToken,
         refreshToken,
-        user: {
-          ...user.result,
-        },
+        user: user.user,
       };
     } catch (error) {
       console.log(error);
@@ -76,7 +74,6 @@ export class AuthResolver {
     try {
       const { refreshToken } = context.req.cookies;
       const refreshResponse = await this.authService.refresh(refreshToken, context.req.user);
-      console.log(refreshResponse);
       const response: Response = context.req.res;
 
       response.cookie('refreshToken', refreshResponse.refreshToken, {

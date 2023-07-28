@@ -19,6 +19,7 @@ import { CommentTree, IComment } from 'src/utils/comment-tree';
 import { CommentResponse } from 'src/comments/dto/comment-response';
 import { CreateLikeInput } from 'src/likes/dto/create-like.input';
 import { RemoveLikeResponse } from 'src/likes/dto/remove-like-response';
+import { UserResponse } from 'src/auth/dto/user-response';
 
 @Resolver(() => Post)
 export class PostsResolver {
@@ -54,12 +55,13 @@ export class PostsResolver {
   }
 
   @ResolveField(() => User, { name: 'user' })
-  async getUser(@Parent() post: Post): Promise<User> {
-    return await this.usersService.findUserById(post.userId);
+  async getUser(@Parent() post: Post): Promise<UserResponse> {
+    const user = await this.usersService.findUserById(post.userId);
+    return user;
   }
 
   @ResolveField('likes', () => [Like])
-  getLikes(@Parent() post: Post) {
+  async getLikes(@Parent() post: Post): Promise<Like[]> {
     const { id } = post;
     return this.likesService.findAllByPostId({ postId: id });
   }
@@ -85,7 +87,9 @@ export class PostsResolver {
       await this.initializeCommentTreeForPost(post);
     }
 
-    const comments = this.commentTreeSet.get(post.id).sort();
+    const comments = await this.commentTreeSet.get(post.id).sort();
+
+    // console.log(comments);
 
     return comments;
   }

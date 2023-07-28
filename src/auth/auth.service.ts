@@ -117,12 +117,11 @@ export class AuthService {
     await this.authRefreshTokenService.saveToken(user.id, refreshToken);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: pw, ...result } = user;
 
     return {
       accessToken,
       refreshToken,
-      result,
+      user,
     };
   }
 }

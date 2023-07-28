@@ -6,7 +6,7 @@ type Like {
   id: ID!
   userId: String!
   postId: String!
-  user: User!
+  user: UserResponse!
 }
 
 type User {
@@ -36,7 +36,7 @@ scalar DateTime
 type Comment {
   id: ID!
   userId: String!
-  user: User!
+  user: UserResponse!
   postId: String!
   post: Post!
   content: String!
@@ -57,16 +57,6 @@ type Post {
   totalComments: Int!
 }
 
-type CommentResponse {
-  id: String!
-  user: User!
-  parentId: String
-  post: Post!
-  content: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
 type UserResponse {
   id: String!
   username: String!
@@ -77,6 +67,16 @@ type UserResponse {
   musicGenres: String
   socialMedia: String
   education: String
+}
+
+type CommentResponse {
+  id: String!
+  user: UserResponse!
+  parentId: String
+  post: Post!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type LoginResponse {

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { ReplyTo } from 'src/comments/entities/replyto.entity';
+import { UsersService } from 'src/users/users.service';
 import { CommentTree } from 'src/utils/comment-tree';
 import { Repository } from 'typeorm';
 
@@ -11,7 +12,8 @@ export class CommentTreeService {
 
   constructor(
     // @InjectRepository(Comment) private commentRepository: Repository<Comment>,
-    @InjectRepository(ReplyTo) private replyToRepository: Repository<ReplyTo>
+    @InjectRepository(ReplyTo) private replyToRepository: Repository<ReplyTo>,
+    private readonly usersService: UsersService
   ) {}
 
   async initializeCommentTree(comments: Comment[]): Promise<CommentTree> {
@@ -20,7 +22,7 @@ export class CommentTreeService {
     // if the order in which the queries are executed is important
     //   const comments = await Comment.find();
 
-    this.commentTree = new CommentTree();
+    this.commentTree = new CommentTree(this.usersService);
     const replies = await this.replyToRepository.find();
 
     for (const r of replies) {
@@ -29,7 +31,7 @@ export class CommentTreeService {
 
     for (const c of comments) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { post, user, replies, ...result } = c;
+      const { post, replies, ...result } = c;
       this.commentTree.addComment(result);
     }
 

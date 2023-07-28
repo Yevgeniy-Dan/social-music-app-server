@@ -8,7 +8,11 @@
 //                  / \
 //        grandchild2  grandchild3
 
+import { UsersService } from 'src/users/users.service';
 import CommentMap from './CommentMap';
+import { User } from 'src/users/entities/user.entity';
+import { UserResponse } from 'src/auth/dto/user-response';
+import { plainToClass } from 'class-transformer';
 
 export interface IComment {
   id: string;
@@ -18,6 +22,7 @@ export interface IComment {
   parentId?: string;
   createdAt: Date;
   updatedAt: Date;
+  user: UserResponse;
 }
 
 type ReplySet = {
@@ -30,10 +35,12 @@ type Order = 'asc' | 'desc';
 export class CommentTree {
   comments: CommentMap;
   replyIds: Set<ReplySet>;
+  usersService: UsersService;
 
-  constructor() {
+  constructor(usersService: UsersService) {
     this.comments = new CommentMap();
     this.replyIds = new Set<ReplySet>();
+    this.usersService = usersService;
   }
 
   addComment = (comment: IComment) => {
@@ -89,8 +96,8 @@ export class CommentTree {
     this.comments.getById(parentId).add(childObj);
   };
 
-  sort = (): IComment[] => {
-    const comments = CommentTree.sortComments(this.comments);
+  sort = async (): Promise<IComment[]> => {
+    const comments = await CommentTree.sortComments(this.comments, this.usersService);
 
     // Create a map of each object's dependecies
     const dependencies = new Map();
@@ -125,7 +132,7 @@ export class CommentTree {
     return result;
   };
 
-  static sortComments(comments: CommentMap): IComment[] {
+  static async sortComments(comments: CommentMap, usersService: UsersService): Promise<IComment[]> {
     const visited = {};
     const result: IComment[] = [];
 
@@ -133,7 +140,7 @@ export class CommentTree {
 
     for (const comment of commentsCopy.keys()) {
       if (!visited[comment.id]) {
-        CommentTree.dfs(comment, commentsCopy, visited, result);
+        await CommentTree.dfs(comment, commentsCopy, visited, result, usersService);
       }
     }
 
@@ -162,19 +169,27 @@ export class CommentTree {
     return comments;
   }
 
-  static dfs(node: IComment, graph: CommentMap, visited: { [key: string]: boolean }, result: IComment[]) {
+  static async dfs(
+    node: IComment,
+    graph: CommentMap,
+    visited: { [key: string]: boolean },
+    result: IComment[],
+    usersService: UsersService
+  ) {
     visited[node.id] = true;
     const children = graph.getById(node.id) || [];
 
     if (children) {
       for (const child of children) {
         if (!visited[child.id]) {
-          CommentTree.dfs(child, graph, visited, result);
+          await CommentTree.dfs(child, graph, visited, result, usersService);
         }
       }
     }
 
-    result.push(node);
+    const user = await usersService.findUserById(node.userId);
+
+    result.push({ ...node, user: user });
   }
 }
 
