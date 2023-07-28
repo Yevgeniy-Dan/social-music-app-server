@@ -1,17 +1,30 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import { LoginUserInput } from './dto/login-user.input';
+import { SignUserInput } from './dto/sign-user.input';
 import { User } from 'src/users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserNotFoundError } from './errors/UserNotFoundError';
-
+import { AuthAccessTokenService } from './auth-access-token.service';
+import { AuthRefreshTokenService } from './auth-refresh-token.service';
+import { MailService } from './mail.service';
+import { UserResponse } from './dto/user-response';
+import { UserExistError } from './errors/UserExistError';
+import { Configuration } from 'configuration.interface';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService, private jwtService: JwtService) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+    private configService: ConfigService<Configuration>,
+    private readonly authAccessTokenService: AuthAccessTokenService,
+    private readonly authRefreshTokenService: AuthRefreshTokenService,
+    private readonly mailService: MailService
+  ) {}
 
-  async validateUser(username: string, password: string): Promise<any> {
-    const user = await this.usersService.getUserByName(username);
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.usersService.getUserByEmail(email);
 
     const valid = await bcrypt.compare(password, user?.password);
 
@@ -22,29 +35,94 @@ export class AuthService {
   }
 
   async login(user: User) {
+    const accessToken = this.authAccessTokenService.generateToken({
+      username: user.username,
+      sub: user.id,
+    });
+
+    const refreshToken = this.authRefreshTokenService.generateToken({
+      username: user.username,
+      sub: user.id,
+    });
+
+    await this.authRefreshTokenService.saveToken(user.id, refreshToken);
+
     return {
-      access_token: this.jwtService.sign({ username: user.username, sub: user.id }),
+      accessToken,
+      refreshToken,
       user,
     };
   }
 
-  async signup(loginUserInput: LoginUserInput): Promise<User> {
-    try {
-      const user = await this.usersService.getUserByName(loginUserInput.username); //TODO: Change 'getUserByName' method logic
-      if (user) {
-        throw new Error('User aldready exists');
-      }
-    } catch (error) {
-      if (error instanceof UserNotFoundError) {
-        const password = await bcrypt.hash(loginUserInput.password, 10);
-
-        return await this.usersService.create({
-          ...loginUserInput,
-          password,
-        });
-      }
-
-      throw error;
+  async refresh(token: string, user: User) {
+    const tokenInDb = await this.authRefreshTokenService.find(token);
+    if (!tokenInDb) {
+      throw new UnauthorizedException();
     }
+
+    const updatedUser = await this.usersService.findUserById(user.id);
+
+    const accessToken = this.authAccessTokenService.generateToken({
+      username: updatedUser.username,
+      sub: updatedUser.id,
+    });
+
+    const refreshToken = this.authRefreshTokenService.generateToken({
+      username: updatedUser.username,
+      sub: updatedUser.id,
+    });
+
+    await this.authRefreshTokenService.saveToken(updatedUser.id, refreshToken);
+
+    return {
+      accessToken,
+      refreshToken,
+      user: updatedUser,
+    };
+  }
+
+  async logout(refreshToken: string) {
+    const tokenData = await this.authRefreshTokenService.remove(refreshToken);
+    return tokenData?.refreshToken;
+  }
+
+  async signup(signUserInput: SignUserInput) {
+    const existedUser = await this.usersService.getUserByEmail(signUserInput.email);
+
+    if (existedUser) {
+      throw new UserExistError(`User with email ${existedUser.email} already exists.`);
+    }
+
+    const password = await bcrypt.hash(signUserInput.password, 10);
+
+    const user = await this.usersService.create({
+      ...signUserInput,
+      password,
+    });
+    await this.mailService.sendActivationMail(
+      user.email,
+      `${this.configService.get('apiUrl')}/activate?token=${user.activationLink}`
+    );
+
+    const accessToken = this.authAccessTokenService.generateToken({
+      username: user.username,
+      sub: user.id,
+    });
+
+    const refreshToken = this.authRefreshTokenService.generateToken({
+      username: user.username,
+      sub: user.id,
+    });
+
+    await this.authRefreshTokenService.saveToken(user.id, refreshToken);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: pw, ...result } = user;
+
+    return {
+      accessToken,
+      refreshToken,
+      result,
+    };
   }
 }

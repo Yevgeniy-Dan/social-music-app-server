@@ -59,11 +59,6 @@ export type LoginResponse = {
   user: User;
 };
 
-export type LoginUserInput = {
-  password: Scalars['String']['input'];
-  username: Scalars['String']['input'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   createComment: Comment;
@@ -82,7 +77,7 @@ export type MutationCreateLikeArgs = {
 };
 
 export type MutationLoginArgs = {
-  loginUserInput: LoginUserInput;
+  loginUserInput: SignUserInput;
 };
 
 export type MutationRemoveLikeArgs = {
@@ -90,7 +85,7 @@ export type MutationRemoveLikeArgs = {
 };
 
 export type MutationSignupArgs = {
-  loginUserInput: LoginUserInput;
+  signupUserInput: SignUserInput;
 };
 
 export type Post = {
@@ -128,14 +123,22 @@ export type QueryUserArgs = {
   username: Scalars['String']['input'];
 };
 
+export type SignUserInput = {
+  password: Scalars['String']['input'];
+  username: Scalars['String']['input'];
+};
+
 export type User = {
   __typename?: 'User';
+  activationLink?: Maybe<Scalars['String']['output']>;
   avatar?: Maybe<Scalars['String']['output']>;
   bio?: Maybe<Scalars['String']['output']>;
   comments: Array<Maybe<Comment>>;
   createdAt: Scalars['DateTime']['output'];
   education?: Maybe<Scalars['String']['output']>;
+  email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+  isActivated: Scalars['Boolean']['output'];
   likes: Array<Maybe<Like>>;
   musicGenres?: Maybe<Scalars['String']['output']>;
   password: Scalars['String']['output'];

@@ -169,3 +169,5 @@ or
 ```
 
 ![grahpql-post-request](./images/graphql/post.png)
+
+<!-- npx graphql-codegen -->

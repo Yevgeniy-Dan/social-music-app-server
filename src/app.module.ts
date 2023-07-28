@@ -13,10 +13,13 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Configuration } from 'configuration.interface';
 import configuration from 'config/configuration';
 import { join } from 'path';
-import { AuthModule } from './auth/auth.module';
 import { LikesModule } from './likes/likes.module';
 import { CommentsModule } from './comments/comments.module';
 import { CommentTreeService } from 'config/initializeCommentTree';
+import { AuthModule } from './auth/auth.module';
+import { MailService } from './auth/mail.service';
+import { ActivationController } from './auth/controllers/activation.controller';
+import { ActivationService } from './auth/activation.service';
 
 @Module({
   imports: [

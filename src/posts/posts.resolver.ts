@@ -11,7 +11,7 @@ import { PaginationArgs } from './dto/pagination.args';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { CommentsService } from 'src/comments/comments.service';
 import { CommentTreeService } from 'config/initializeCommentTree';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAccessAuthGuard } from 'src/auth/jwt-access-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { CreatePostInput } from './dto/create-post.input';
 import { CreateCommentInput } from 'src/comments/dto/create-comment.input';
@@ -79,7 +79,7 @@ export class PostsResolver {
   }
 
   @ResolveField('comments', () => [CommentResponse])
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessAuthGuard)
   async getComments(@Parent() post: Post) {
     if (!this.commentTreeSet.has(post.id)) {
       await this.initializeCommentTreeForPost(post);
@@ -90,7 +90,7 @@ export class PostsResolver {
     return comments;
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessAuthGuard)
   @Mutation(() => Comment, { name: 'createComment' })
   async createCommentOnPost(@Context() context, @Args('createCommentInput') args: CreateCommentInput) {
     const { userId } = context.req.user;
@@ -119,7 +119,7 @@ export class PostsResolver {
     return comment;
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessAuthGuard)
   @Mutation(() => Like, { name: 'createLike' })
   async createLike(@Context() context, @Args('postId') postId: string) {
     const { userId } = context.req.user;
@@ -130,7 +130,7 @@ export class PostsResolver {
     });
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessAuthGuard)
   @Mutation(() => Like, { name: 'removeLike' })
   async removeLike(@Context() context, @Args('postId') postId: string) {
     const { userId } = context.req.user;

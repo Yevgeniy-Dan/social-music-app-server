@@ -12,6 +12,9 @@ type Like {
 type User {
   id: ID!
   username: String!
+  email: String!
+  isActivated: Boolean!
+  activationLink: String
   avatar: String
   bio: String
   musicGenres: String
@@ -64,9 +67,32 @@ type CommentResponse {
   updatedAt: DateTime!
 }
 
+type UserResponse {
+  id: String!
+  username: String!
+  email: String!
+  isActivated: Boolean!
+  avatar: String
+  bio: String
+  musicGenres: String
+  socialMedia: String
+  education: String
+}
+
 type LoginResponse {
-  access_token: String!
-  user: User!
+  accessToken: String!
+  refreshToken: String!
+  user: UserResponse!
+}
+
+type SignUpResponse {
+  accessToken: String!
+  refreshToken: String!
+  user: UserResponse!
+}
+
+type LogoutResponse {
+  token: String!
 }
 
 type Query {
@@ -82,7 +108,9 @@ type Mutation {
   createLike(postId: String!): Like!
   removeLike(postId: String!): Like!
   login(loginUserInput: LoginUserInput!): LoginResponse!
-  signup(loginUserInput: LoginUserInput!): User!
+  logout: LogoutResponse!
+  signup(signupUserInput: SignUserInput!): SignUpResponse!
+  refresh: LoginResponse!
 }
 
 input CreateCommentInput {
@@ -92,6 +120,12 @@ input CreateCommentInput {
 }
 
 input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+input SignUserInput {
   username: String!
+  email: String!
   password: String!
 }

@@ -1,0 +1,24 @@
+[33mb320d5f[m[33m ([m[1;36mHEAD -> [m[1;32memail_jwt[m[33m)[m adding validation by input
+[33mbc313e1[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m auth signup fixing problem
+[33m942a272[m[33m ([m[1;32mcomment_likes[m[33m)[m generate gaphql types
+[33maf2d2e0[m createing and removing likes
+[33mdc3374e[m create comment post
+[33m0b39450[m chagen graphql types.ts
+[33m07ea758[m migration fixing and additional queries for likes and comments count
+[33m188e31c[m auth rechange
+[33m6270165[m creating commentTree data sctructire and comment entity
+[33mcd07756[m creating comment entity
+[33m0ec570c[m post query with pagination
+[33m62fdd5b[m define likes entity
+[33mc50fc5f[m add user query to posts
+[33m12bdaa9[m jwt implementing
+[33m68f18c5[m readme graphql update
+[33mb7e9f31[m generate types for api requests
+[33m1ffa9b3[m graphql integration instead of RestAPI
+[33ma59a27a[m fix migration problem
+[33ma09691c[m migrations
+[33ma5a78d0[m cors problem solving
+[33m6827bdd[m readme changes
+[33m7740fdf[m updating readme
+[33m328d38c[m project transfer to NestJS from Express
+[33ma6d0f15[m initial commit

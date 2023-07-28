@@ -3,7 +3,7 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { UserNotFoundError } from 'src/auth/errors/UserNotFoundError';
 @Injectable()
@@ -11,8 +11,11 @@ export class UsersService {
   constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
 
   async create(createUserInput: CreateUserInput) {
+    const activationLink = uuidv4();
+
     const user = this.userRepository.create({
       ...createUserInput,
+      activationLink,
     });
 
     return await this.userRepository.save(user);
@@ -31,6 +34,16 @@ export class UsersService {
       throw new UserNotFoundError('User with the provided username not found.');
     }
 
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findOneBy({
+      email,
+    });
+    if (!user) {
+      throw new UserNotFoundError(`User with the provided email ${email} not found.`);
+    }
     return user;
   }
 

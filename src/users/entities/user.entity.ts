@@ -3,6 +3,7 @@ import { Comment } from 'src/comments/entities/comment.entity';
 import { Like } from 'src/likes/entities/like.entity';
 import { Post } from 'src/posts/entities/post.entity';
 import { Column, OneToMany, PrimaryGeneratedColumn, Entity, Index, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Token } from './token.entity';
 
 @Entity()
 @ObjectType()
@@ -15,6 +16,19 @@ export class User {
   @Field()
   @Index({ unique: true })
   username: string;
+
+  @Column()
+  @Field()
+  @Index({ unique: true })
+  email: string;
+
+  @Column({ default: false })
+  @Field()
+  isActivated: boolean;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  activationLink: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
@@ -59,4 +73,7 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp' })
   @Field()
   updatedAt: Date;
+
+  @OneToMany(() => Token, (token) => token.user, { cascade: true })
+  tokens: Token[];
 }

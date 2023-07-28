@@ -15,7 +15,7 @@ services:
       - PG_PASSWORD=12345
       - PG_HOST=db
       - PG_PORT=5432
-      - JWT_SECRET=EJmVoJU6jzo7cLkJztS1gOOyXVvNkn05KDbxuhAJ4tizs77QSG
+      - JWT_ACCESS_SECRET=EJmVoJU6jzo7cLkJztS1gOOyXVvNkn05KDbxuhAJ4tizs77QSG
     depends_on:
       - db
 
