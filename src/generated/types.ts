@@ -78,6 +78,7 @@ export type Mutation = {
   logout: LogoutResponse;
   refresh: LoginResponse;
   removeLike: Like;
+  sendReactivation: Scalars['String']['output'];
   signup: SignUpResponse;
 };
 
@@ -95,6 +96,10 @@ export type MutationLoginArgs = {
 
 export type MutationRemoveLikeArgs = {
   postId: Scalars['String']['input'];
+};
+
+export type MutationSendReactivationArgs = {
+  email: Scalars['String']['input'];
 };
 
 export type MutationSignupArgs = {
@@ -171,6 +176,7 @@ export type User = {
 
 export type UserResponse = {
   __typename?: 'UserResponse';
+  activationLink?: Maybe<Scalars['String']['output']>;
   avatar?: Maybe<Scalars['String']['output']>;
   bio?: Maybe<Scalars['String']['output']>;
   education?: Maybe<Scalars['String']['output']>;

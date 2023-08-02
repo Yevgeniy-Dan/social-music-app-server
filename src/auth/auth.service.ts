@@ -5,13 +5,13 @@ import { User } from 'src/users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserNotFoundError } from './errors/UserNotFoundError';
-import { AuthAccessTokenService } from './auth-access-token.service';
-import { AuthRefreshTokenService } from './auth-refresh-token.service';
-import { MailService } from './mail.service';
+import { MailService } from '../mail.service';
 import { UserResponse } from './dto/user-response';
 import { UserExistError } from './errors/UserExistError';
 import { Configuration } from 'configuration.interface';
 import { ConfigService } from '@nestjs/config';
+import { AuthAccessTokenService } from './auth-access-token/auth-access-token.service';
+import { AuthRefreshTokenService } from './auth-refresh-token/auth-refresh-token.service';
 @Injectable()
 export class AuthService {
   constructor(

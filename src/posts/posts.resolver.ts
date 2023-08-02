@@ -11,7 +11,6 @@ import { PaginationArgs } from './dto/pagination.args';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { CommentsService } from 'src/comments/comments.service';
 import { CommentTreeService } from 'config/initializeCommentTree';
-import { JwtAccessAuthGuard } from 'src/auth/jwt-access-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { CreatePostInput } from './dto/create-post.input';
 import { CreateCommentInput } from 'src/comments/dto/create-comment.input';
@@ -20,7 +19,8 @@ import { CommentResponse } from 'src/comments/dto/comment-response';
 import { CreateLikeInput } from 'src/likes/dto/create-like.input';
 import { RemoveLikeResponse } from 'src/likes/dto/remove-like-response';
 import { UserResponse } from 'src/auth/dto/user-response';
-import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
+import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
+import { JwtAccessAuthGuard } from 'src/auth/guards/jwt-access-auth.guard';
 
 @Resolver(() => Post)
 export class PostsResolver {

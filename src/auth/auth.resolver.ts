@@ -4,14 +4,13 @@ import { AuthService } from './auth.service';
 import { LoginResponse } from './dto/login-response';
 import { SignUserInput } from './dto/sign-user.input';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from './gql-auth.guard';
+import { GqlAuthGuard } from './guards/gql-auth.guard';
 import { User } from 'src/users/entities/user.entity';
 import { SignUpResponse } from './dto/signup-response';
-import { MailService } from './mail.service';
+import { MailService } from '../mail.service';
 import { Response, Request } from 'express';
 import { LoginUserInput } from './dto/login-user.input';
 import { LogoutResponse } from './dto/logout-response';
-import { JwtRefreshAuthGuard } from './jwt-refresh-auth.guard';
 import { Configuration } from 'configuration.interface';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from 'src/users/users.service';
@@ -19,6 +18,7 @@ import { UserNotFoundError } from './errors/UserNotFoundError';
 import { v4 as uuidv4 } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard';
 
 @Resolver()
 export class AuthResolver {
