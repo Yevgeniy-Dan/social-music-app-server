@@ -23,8 +23,12 @@ export class AuthService {
     private readonly mailService: MailService
   ) {}
 
-  async validateUser(email: string, password: string): Promise<any> {
+  async validateUser(email: string, password: string): Promise<UserResponse> {
     const user = await this.usersService.getUserByEmail(email);
+
+    if (!user) {
+      throw new UserNotFoundError(`User with email ${email} not found`);
+    }
 
     const valid = await bcrypt.compare(password, user?.password);
 

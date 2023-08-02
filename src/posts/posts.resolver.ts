@@ -20,6 +20,7 @@ import { CommentResponse } from 'src/comments/dto/comment-response';
 import { CreateLikeInput } from 'src/likes/dto/create-like.input';
 import { RemoveLikeResponse } from 'src/likes/dto/remove-like-response';
 import { UserResponse } from 'src/auth/dto/user-response';
+import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 
 @Resolver(() => Post)
 export class PostsResolver {
@@ -81,7 +82,7 @@ export class PostsResolver {
   }
 
   @ResolveField('comments', () => [CommentResponse])
-  @UseGuards(JwtAccessAuthGuard)
+  @UseGuards(GqlAuthGuard, JwtAccessAuthGuard)
   async getComments(@Parent() post: Post) {
     if (!this.commentTreeSet.has(post.id)) {
       await this.initializeCommentTreeForPost(post);
@@ -94,7 +95,7 @@ export class PostsResolver {
     return comments;
   }
 
-  @UseGuards(JwtAccessAuthGuard)
+  @UseGuards(GqlAuthGuard, JwtAccessAuthGuard)
   @Mutation(() => Comment, { name: 'createComment' })
   async createCommentOnPost(@Context() context, @Args('createCommentInput') args: CreateCommentInput) {
     const { userId } = context.req.user;
@@ -123,7 +124,7 @@ export class PostsResolver {
     return comment;
   }
 
-  @UseGuards(JwtAccessAuthGuard)
+  @UseGuards(GqlAuthGuard, JwtAccessAuthGuard)
   @Mutation(() => Like, { name: 'createLike' })
   async createLike(@Context() context, @Args('postId') postId: string) {
     const { userId } = context.req.user;
@@ -134,7 +135,7 @@ export class PostsResolver {
     });
   }
 
-  @UseGuards(JwtAccessAuthGuard)
+  @UseGuards(GqlAuthGuard, JwtAccessAuthGuard)
   @Mutation(() => Like, { name: 'removeLike' })
   async removeLike(@Context() context, @Args('postId') postId: string) {
     const { userId } = context.req.user;

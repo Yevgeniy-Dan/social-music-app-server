@@ -11,6 +11,9 @@ export class UserResponse {
   @Field()
   email: string;
 
+  @Field({ nullable: true })
+  activationLink?: string;
+
   @Field()
   isActivated: boolean;
 

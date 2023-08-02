@@ -20,7 +20,7 @@ services:
       - SMTP_HOST=smtp.gmail.com
       - SMTP_PORT=587
       - SMTP_USER=socialmusicapp23@gmail.com
-      - SMTP_PASSWORD=
+      - SMTP_PASSWORD=npfypbwewyosktse
       - API_URL=http://localhost:8080
     depends_on:
       - db

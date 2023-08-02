@@ -24,7 +24,7 @@ export class MailService {
     await this.transporter.sendMail({
       from: this.configService.get('smtp').user,
       to,
-      subject: 'Account activation for' + this.configService.get('apiUrl'),
+      subject: 'Account activation for ' + this.configService.get('apiUrl'),
       text: '',
       html: `
       <div>

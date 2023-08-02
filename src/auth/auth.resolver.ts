@@ -1,5 +1,5 @@
-import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
-import { Req } from '@nestjs/common';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { ForbiddenException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginResponse } from './dto/login-response';
 import { SignUserInput } from './dto/sign-user.input';
@@ -12,10 +12,23 @@ import { Response, Request } from 'express';
 import { LoginUserInput } from './dto/login-user.input';
 import { LogoutResponse } from './dto/logout-response';
 import { JwtRefreshAuthGuard } from './jwt-refresh-auth.guard';
+import { Configuration } from 'configuration.interface';
+import { ConfigService } from '@nestjs/config';
+import { UsersService } from 'src/users/users.service';
+import { UserNotFoundError } from './errors/UserNotFoundError';
+import { v4 as uuidv4 } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Resolver()
 export class AuthResolver {
-  constructor(private authService: AuthService, private readonly mailService: MailService) {}
+  constructor(
+    private authService: AuthService,
+    private mailService: MailService,
+    private userService: UsersService,
+    private configService: ConfigService<Configuration>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>
+  ) {}
 
   @Mutation(() => LoginResponse)
   @UseGuards(GqlAuthGuard)
@@ -30,6 +43,31 @@ export class AuthResolver {
     });
 
     return { ...loginResponse };
+  }
+
+  @Mutation(() => String)
+  async sendReactivation(@Args('email') email: string) {
+    const user = await this.userService.getUserByEmail(email);
+
+    if (!user) {
+      throw new UserNotFoundError(`User with ${email} email not found`);
+    }
+
+    if (!user.isActivated && user.email) {
+      const activationLink = uuidv4();
+
+      user.activationLink = activationLink;
+      user.isActivated = false;
+
+      await this.userRepository.save(user);
+      await this.mailService.sendActivationMail(
+        user.email,
+        `${this.configService.get('apiUrl')}/activate?token=${user.activationLink}`
+      );
+      return 'Reactivation link sent successfully!';
+    } else {
+      throw new ForbiddenException('Unable to send reactivation link.');
+    }
   }
 
   @Mutation(() => LogoutResponse)

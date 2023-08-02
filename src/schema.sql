@@ -61,6 +61,7 @@ type UserResponse {
   id: String!
   username: String!
   email: String!
+  activationLink: String
   isActivated: Boolean!
   avatar: String
   bio: String
@@ -108,6 +109,7 @@ type Mutation {
   createLike(postId: String!): Like!
   removeLike(postId: String!): Like!
   login(loginUserInput: LoginUserInput!): LoginResponse!
+  sendReactivation(email: String!): String!
   logout: LogoutResponse!
   signup(signupUserInput: SignUserInput!): SignUpResponse!
   refresh: LoginResponse!
