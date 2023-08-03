@@ -12,6 +12,7 @@ import { Configuration } from 'configuration.interface';
 import { ConfigService } from '@nestjs/config';
 import { AuthAccessTokenService } from './auth-access-token/auth-access-token.service';
 import { AuthRefreshTokenService } from './auth-refresh-token/auth-refresh-token.service';
+import { JwtTokenResponse } from './interfaces/jwt-token-response.interface';
 @Injectable()
 export class AuthService {
   constructor(
@@ -58,13 +59,14 @@ export class AuthService {
     };
   }
 
-  async refresh(token: string, user: User) {
+  async refresh(token: string, user: JwtTokenResponse) {
+    const { userId } = user;
     const tokenInDb = await this.authRefreshTokenService.find(token);
     if (!tokenInDb) {
       throw new UnauthorizedException();
     }
 
-    const updatedUser = await this.usersService.findUserById(user.id);
+    const updatedUser = await this.usersService.findUserById(userId);
 
     const accessToken = this.authAccessTokenService.generateToken({
       username: updatedUser.username,

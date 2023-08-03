@@ -13,7 +13,6 @@ export class CommentsResolver {
 
   @ResolveField(() => UserResponse, { name: 'user' })
   async getUsers(@Parent() comment: Comment) {
-    // console.log(comment);
     return await this.usersService.findUserById(comment.userId);
   }
 }

@@ -16,10 +16,7 @@ export class UsersService {
   async create(createUserInput: CreateUserInput) {
     const activationLink = uuidv4();
 
-    const user = this.userRepository.create({
-      ...createUserInput,
-      activationLink,
-    });
+    const user = this.userRepository.create({ ...createUserInput, activationLink });
 
     const savedUser = await this.userRepository.save(user);
     const { password, ...result } = savedUser;
@@ -61,14 +58,15 @@ export class UsersService {
     return result;
   }
 
-  async updateUserById(userId: string, fieldToUpdate: string, newValue: any): Promise<User> {
-    const user = await this.userRepository.findOneBy({ id: userId });
+  async update(user: UpdateUserInput): Promise<User> {
+    const existedUser = await this.userRepository.findOneBy({ id: user.id });
 
-    if (!user) {
+    if (!existedUser) {
       throw new NotFoundException('User not found');
     }
 
-    user[fieldToUpdate] = newValue;
-    return this.userRepository.save(user);
+    Object.assign(existedUser, user);
+
+    return await this.userRepository.save(existedUser);
   }
 }

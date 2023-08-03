@@ -101,7 +101,6 @@ export class AuthResolver {
         user: user.user,
       };
     } catch (error) {
-      console.log(error);
       return new Error(`${error && error?.message}`);
     }
   }

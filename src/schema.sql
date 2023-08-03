@@ -105,6 +105,7 @@ type Query {
 }
 
 type Mutation {
+  updateUser(updateUserInput: UpdateUserInput!): User!
   createComment(createCommentInput: CreateCommentInput!): Comment!
   createLike(postId: String!): Like!
   removeLike(postId: String!): Like!
@@ -113,6 +114,18 @@ type Mutation {
   logout: LogoutResponse!
   signup(signupUserInput: SignUserInput!): SignUpResponse!
   refresh: LoginResponse!
+}
+
+input UpdateUserInput {
+  username: String
+  email: String
+  password: String
+  id: String!
+  avatar: String
+  bio: String
+  musicGenres: String
+  socialMedia: String
+  education: String
 }
 
 input CreateCommentInput {
