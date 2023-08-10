@@ -118,6 +118,7 @@ type Query {
 
 type Mutation {
   updateUser(updateUserInput: UpdateUserInput!): User!
+  createPost(createPostInput: CreatePostInput!): PostResponse!
   createComment(createCommentInput: CreateCommentInput!): Comment!
   createLike(postId: String!): Like!
   removeLike(postId: String!): Like!
@@ -138,6 +139,10 @@ input UpdateUserInput {
   musicGenres: String
   socialMedia: String
   education: String
+}
+
+input CreatePostInput {
+  mediaUrl: String!
 }
 
 input CreateCommentInput {

@@ -11,9 +11,10 @@ export class PostsService {
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>
   ) {}
-  // create(createPostInput: CreatePostInput) {
-  //   return 'This action adds a new post';
-  // }
+  create(createPostInput: CreatePostInput, userId: string) {
+    const post = this.postRepository.create({ mediaUrl: createPostInput.mediaUrl, userId });
+    return this.postRepository.save(post);
+  }
 
   findAllByUserId({ userId, offset, limit }: { userId: string; offset: number; limit: number }): Promise<Post[]> {
     return this.postRepository.find({ where: { user: { id: userId } }, skip: offset, take: limit }); //TODO: add offset, limit

@@ -73,6 +73,17 @@ export class PostsResolver {
     return postResponse;
   }
 
+  @Mutation(() => PostResponse, { name: 'createPost' })
+  @UseGuards(JwtAccessAuthGuard)
+  async create(@Context() context, @Args('createPostInput') postInput: CreatePostInput): Promise<PostResponse> {
+    const { userId } = context.req.user;
+
+    const post = await this.postsService.create(postInput, userId);
+
+    const postResponse = this.preparePostToResponse(post, userId);
+    return postResponse;
+  }
+
   @ResolveField(() => User, { name: 'user' })
   async getUser(@Parent() post: PostResponse): Promise<UserResponse> {
     const user = await this.usersService.findUserById(post.userId);
