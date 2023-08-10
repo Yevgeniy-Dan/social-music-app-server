@@ -37,6 +37,12 @@ export class LikesService {
     return this.likeRepository.find({ where: { post: { id: postId } } });
   }
 
+  async findOneByPostUser(postId: string, userId: string): Promise<Like> {
+    return this.likeRepository.findOne({
+      where: { post: { id: postId }, user: { id: userId } },
+    });
+  }
+
   async findAll() {
     return this.likeRepository.find();
   }

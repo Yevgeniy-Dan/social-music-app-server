@@ -20,7 +20,7 @@ type User {
   musicGenres: String
   socialMedia: String
   education: String
-  posts: [Post!]!
+  posts(page: Int! = 1): [PostResponse!]!
   likes: [Like]!
   comments: [Comment]!
   password: String!
@@ -49,12 +49,10 @@ type Post {
   mediaUrl: String!
   userId: String!
   user: User!
-  likes: [Like!]!
-  comments: [CommentResponse!]!
+  likes: [Like]!
+  comments: [Comment]!
   createdAt: DateTime!
   updatedAt: DateTime!
-  totalLikes: Int!
-  totalComments: Int!
 }
 
 type UserResponse {
@@ -80,6 +78,20 @@ type CommentResponse {
   updatedAt: DateTime!
 }
 
+type PostResponse {
+  id: String!
+  mediaUrl: String!
+  userId: String!
+  user: User!
+  likes: [Like!]!
+  totalLikes: Int!
+  totalComments: Int!
+  isLiked: Boolean!
+  comments: [CommentResponse!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type LoginResponse {
   accessToken: String!
   refreshToken: String!
@@ -99,8 +111,8 @@ type LogoutResponse {
 type Query {
   users: [User!]!
   user(username: String!): User!
-  posts(page: Int! = 1): [Post!]!
-  post(id: String!): Post!
+  posts(page: Int! = 1): [PostResponse!]!
+  post(id: String!): PostResponse!
   likes: [Like!]!
 }
 

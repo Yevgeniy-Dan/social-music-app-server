@@ -14,14 +14,15 @@ import { CommentTreeService } from 'config/initializeCommentTree';
 import { UseGuards } from '@nestjs/common';
 import { CreatePostInput } from './dto/create-post.input';
 import { CreateCommentInput } from 'src/comments/dto/create-comment.input';
-import { CommentTree, IComment } from 'src/utils/comment-tree';
+import { CommentTree } from 'src/utils/comment-tree';
 import { CommentResponse } from 'src/comments/dto/comment-response';
 import { CreateLikeInput } from 'src/likes/dto/create-like.input';
 import { RemoveLikeResponse } from 'src/likes/dto/remove-like-response';
 import { UserResponse } from 'src/auth/dto/user-response';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt-access-auth.guard';
+import { PostResponse } from './dto/post-response';
 
-@Resolver(() => Post)
+@Resolver(() => PostResponse)
 export class PostsResolver {
   private readonly POSTS_PER_PAGE = 15;
   private readonly commentTreeSet: Map<string, CommentTree> = new Map<string, CommentTree>();
@@ -41,21 +42,39 @@ export class PostsResolver {
     this.commentTreeSet.set(post.id, commentTree);
   }
 
-  @Query(() => [Post], { name: 'posts' })
-  async findAll(@Args() args: PaginationArgs): Promise<Post[]> {
+  @Query(() => [PostResponse], { name: 'posts' })
+  @UseGuards(JwtAccessAuthGuard)
+  async findAll(@Args() args: PaginationArgs, @Context() context) {
+    const { userId } = context.req.user;
     const { page } = args;
     const offset = (page - 1) * this.POSTS_PER_PAGE;
 
-    return this.postsService.findAll({ limit: this.POSTS_PER_PAGE, offset });
+    const posts = await this.postsService.findAll({ limit: this.POSTS_PER_PAGE, offset });
+
+    const postResponses: PostResponse[] = [];
+
+    for (const post of posts) {
+      const postResponse = await this.preparePostToResponse(post, userId);
+
+      postResponses.push(postResponse);
+    }
+
+    return postResponses;
   }
 
-  @Query(() => Post, { name: 'post' })
-  findOne(@Args('id') id: string) {
-    return this.postsService.findOne(id);
+  @Query(() => PostResponse, { name: 'post' })
+  @UseGuards(JwtAccessAuthGuard)
+  async findOne(@Args('id') id: string, @Context() context): Promise<PostResponse> {
+    const { userId } = context.req.user;
+
+    const post = await this.postsService.findOne(id);
+    const postResponse = await this.preparePostToResponse(post, userId);
+
+    return postResponse;
   }
 
   @ResolveField(() => User, { name: 'user' })
-  async getUser(@Parent() post: Post): Promise<UserResponse> {
+  async getUser(@Parent() post: PostResponse): Promise<UserResponse> {
     const user = await this.usersService.findUserById(post.userId);
     return user;
   }
@@ -143,5 +162,13 @@ export class PostsResolver {
     });
 
     return isRemove;
+  }
+
+  async preparePostToResponse(post: Post, userId: string): Promise<PostResponse> {
+    const isLiked = await this.likesService.findOneByPostUser(post.id, userId);
+    const totalLikes = await this.getTotalLikes(post);
+    const totalComments = await this.getTotalComments(post);
+
+    return { ...post, isLiked: !!isLiked, totalLikes, totalComments };
   }
 }

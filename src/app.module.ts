@@ -17,9 +17,6 @@ import { LikesModule } from './likes/likes.module';
 import { CommentsModule } from './comments/comments.module';
 import { CommentTreeService } from 'config/initializeCommentTree';
 import { AuthModule } from './auth/auth.module';
-import { MailService } from './mail.service';
-import { ActivationController } from './auth/controllers/activation.controller';
-import { ActivationService } from './auth/activation.service';
 
 @Module({
   imports: [

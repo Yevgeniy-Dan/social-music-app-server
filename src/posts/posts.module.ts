@@ -13,6 +13,6 @@ import { CommentTreeService } from 'config/initializeCommentTree';
 @Module({
   imports: [TypeOrmModule.forFeature([Post]), forwardRef(() => UsersModule), LikesModule, CommentsModule],
   providers: [PostsResolver, PostsService, LikesService, CommentsService, CommentTreeService],
-  exports: [TypeOrmModule, PostsService],
+  exports: [TypeOrmModule, PostsService, PostsResolver],
 })
 export class PostsModule {}

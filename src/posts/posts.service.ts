@@ -15,11 +15,11 @@ export class PostsService {
   //   return 'This action adds a new post';
   // }
 
-  async findAllByUserId({ userId }: { userId: string }): Promise<Post[]> {
-    return this.postRepository.find({ where: { user: { id: userId } } });
+  findAllByUserId({ userId, offset, limit }: { userId: string; offset: number; limit: number }): Promise<Post[]> {
+    return this.postRepository.find({ where: { user: { id: userId } }, skip: offset, take: limit }); //TODO: add offset, limit
   }
 
-  async findAll({ offset, limit }: { offset: number; limit: number }) {
+  findAll({ offset, limit }: { offset: number; limit: number }) {
     return this.postRepository.find({
       skip: offset,
       take: limit,

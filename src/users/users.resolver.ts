@@ -7,10 +7,19 @@ import { PostsService } from 'src/posts/posts.service';
 import { Post } from 'src/posts/entities/post.entity';
 import { UseGuards } from '@nestjs/common';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt-access-auth.guard';
+import { PaginationArgs } from 'src/posts/dto/pagination.args';
+import { PostResponse } from 'src/posts/dto/post-response';
+import { PostsResolver } from 'src/posts/posts.resolver';
 
 @Resolver(() => User)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService, private readonly postsService: PostsService) {}
+  private readonly POSTS_PER_PAGE = 15;
+
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly postsService: PostsService,
+    private readonly postsResolver: PostsResolver
+  ) {}
 
   @Query(() => [User], { name: 'users' })
   @UseGuards(JwtAccessAuthGuard)
@@ -24,10 +33,23 @@ export class UsersResolver {
     return this.usersService.getUserByName(username);
   }
 
-  @ResolveField('posts', () => [Post])
-  getPosts(@Parent() user: User) {
+  @ResolveField('posts', () => [PostResponse])
+  async getPosts(@Args() args: PaginationArgs, @Parent() user: User) {
     const { id } = user;
-    return this.postsService.findAllByUserId({ userId: id });
+    const { page } = args;
+    const offset = (page - 1) * this.POSTS_PER_PAGE;
+
+    const posts = await this.postsService.findAllByUserId({ userId: id, limit: this.POSTS_PER_PAGE, offset });
+
+    const postResponses: PostResponse[] = [];
+
+    for (const post of posts) {
+      const postResponse = await this.postsResolver.preparePostToResponse(post, id);
+
+      postResponses.push(postResponse);
+    }
+
+    return postResponses;
   }
 
   @Mutation(() => User, { name: 'updateUser' })
