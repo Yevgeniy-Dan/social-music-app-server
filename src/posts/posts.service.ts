@@ -31,11 +31,24 @@ export class PostsService {
     return this.postRepository.findOneBy({ id: id });
   }
 
-  // update(id: number, updatePostInput: UpdatePostInput) {
-  //   return `This action updates a #${id} post`;
-  // }
+  async update(updatePostInput: UpdatePostInput) {
+    const updateData: Partial<Post> = {};
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} post`;
-  // }
+    if (updatePostInput.mediaUrl) {
+      updateData.mediaUrl = updatePostInput.mediaUrl;
+    }
+
+    const updateResult = await this.postRepository.update(updatePostInput.id, updateData);
+
+    if (updateResult.affected > 0) {
+      const updatedPost = await this.postRepository.findOneBy({ id: updatePostInput.id });
+      return updatedPost;
+    }
+
+    return undefined;
+  }
+
+  remove(id: string) {
+    return this.postRepository.delete(id);
+  }
 }

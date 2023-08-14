@@ -1,7 +1,6 @@
 import { Resolver, Query, Mutation, Args, ResolveField, Parent, Int, Context } from '@nestjs/graphql';
 import { PostsService } from './posts.service';
 import { Post } from './entities/post.entity';
-// import { CreatePostInput } from './dto/create-post.input';
 // import { UpdatePostInput } from './dto/update-post.input';
 import { Like } from 'src/likes/entities/like.entity';
 import { LikesService } from 'src/likes/likes.service';
@@ -11,7 +10,7 @@ import { PaginationArgs } from './dto/pagination.args';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { CommentsService } from 'src/comments/comments.service';
 import { CommentTreeService } from 'config/initializeCommentTree';
-import { UseGuards } from '@nestjs/common';
+import { NotFoundException, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { CreatePostInput } from './dto/create-post.input';
 import { CreateCommentInput } from 'src/comments/dto/create-comment.input';
 import { CommentTree } from 'src/utils/comment-tree';
@@ -21,6 +20,8 @@ import { RemoveLikeResponse } from 'src/likes/dto/remove-like-response';
 import { UserResponse } from 'src/auth/dto/user-response';
 import { JwtAccessAuthGuard } from 'src/auth/guards/jwt-access-auth.guard';
 import { PostResponse } from './dto/post-response';
+import { PostDeleteResponse } from './dto/post-delete-response';
+import { UpdatePostInput } from './dto/update-post.input';
 
 @Resolver(() => PostResponse)
 export class PostsResolver {
@@ -75,12 +76,54 @@ export class PostsResolver {
 
   @Mutation(() => PostResponse, { name: 'createPost' })
   @UseGuards(JwtAccessAuthGuard)
-  async create(@Context() context, @Args('createPostInput') postInput: CreatePostInput): Promise<PostResponse> {
+  async createPost(@Context() context, @Args('createPostInput') postInput: CreatePostInput): Promise<PostResponse> {
     const { userId } = context.req.user;
 
     const post = await this.postsService.create(postInput, userId);
 
     const postResponse = this.preparePostToResponse(post, userId);
+    return postResponse;
+  }
+
+  @Mutation(() => PostDeleteResponse, { name: 'deletePost' })
+  @UseGuards(JwtAccessAuthGuard)
+  async deletePost(@Context() context, @Args('postId') postId: string): Promise<PostDeleteResponse> {
+    const { userId } = context.req.user;
+
+    const post = await this.postsService.findOne(postId);
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    if (post.userId !== userId) {
+      throw new UnauthorizedException('You do not have permission to delete this post');
+    }
+
+    await this.postsService.remove(postId);
+
+    return { success: true, message: 'Post deleted successfully' };
+  }
+
+  @Mutation(() => PostResponse, { name: 'updatePost' })
+  @UseGuards(JwtAccessAuthGuard)
+  async editPost(@Context() context, @Args('post') postInput: UpdatePostInput): Promise<PostResponse | undefined> {
+    const { userId } = context.req.user;
+
+    const post = await this.postsService.findOne(postInput.id);
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    if (post.userId !== userId) {
+      throw new UnauthorizedException('You do not have permission to update this post');
+    }
+
+    const updatedPost = await this.postsService.update(postInput);
+
+    const postResponse = await this.preparePostToResponse(updatedPost, userId);
+
     return postResponse;
   }
 

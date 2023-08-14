@@ -92,6 +92,11 @@ type PostResponse {
   updatedAt: DateTime!
 }
 
+type PostDeleteResponse {
+  success: Boolean!
+  message: String!
+}
+
 type LoginResponse {
   accessToken: String!
   refreshToken: String!
@@ -119,6 +124,8 @@ type Query {
 type Mutation {
   updateUser(updateUserInput: UpdateUserInput!): User!
   createPost(createPostInput: CreatePostInput!): PostResponse!
+  deletePost(postId: String!): PostDeleteResponse!
+  updatePost(post: UpdatePostInput!): PostResponse!
   createComment(createCommentInput: CreateCommentInput!): Comment!
   createLike(postId: String!): Like!
   removeLike(postId: String!): Like!
@@ -143,6 +150,11 @@ input UpdateUserInput {
 
 input CreatePostInput {
   mediaUrl: String!
+}
+
+input UpdatePostInput {
+  mediaUrl: String
+  id: String!
 }
 
 input CreateCommentInput {
