@@ -58,7 +58,7 @@ export class UsersResolver {
     const { userId } = context.req.user;
 
     if (userId !== args.id) {
-      throw new Error('You are not authorized to update this user.');
+      throw new Error('You do not have permission to update this user.');
     }
 
     return this.usersService.update(args);
