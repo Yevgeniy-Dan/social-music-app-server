@@ -4,6 +4,7 @@ import { Like } from 'src/likes/entities/like.entity';
 import { Post } from 'src/posts/entities/post.entity';
 import { Column, OneToMany, PrimaryGeneratedColumn, Entity, Index, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Token } from './token.entity';
+import { UserHashtag } from 'src/search/entities/userhashtag.entity';
 
 @Entity()
 @ObjectType()
@@ -38,9 +39,12 @@ export class User {
   @Field({ nullable: true })
   bio?: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  musicGenres?: string;
+  // @Column({ nullable: true })
+  // @Field({ nullable: true })
+  // musicGenres?: string;
+
+  @OneToMany(() => UserHashtag, (userHashtag) => userHashtag.userId)
+  userHashtags: UserHashtag[];
 
   @Column({ nullable: true })
   @Field({ nullable: true })

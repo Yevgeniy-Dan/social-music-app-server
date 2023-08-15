@@ -17,6 +17,7 @@ import { LikesModule } from './likes/likes.module';
 import { CommentsModule } from './comments/comments.module';
 import { CommentTreeService } from 'config/initializeCommentTree';
 import { AuthModule } from './auth/auth.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
     LikesModule,
     CommentsModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [AppService, CommentTreeService],

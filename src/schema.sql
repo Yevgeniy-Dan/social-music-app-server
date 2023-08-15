@@ -9,6 +9,11 @@ type Like {
   user: UserResponse!
 }
 
+type Hashtag {
+  id: ID!
+  tag: String!
+}
+
 type User {
   id: ID!
   username: String!
@@ -17,7 +22,6 @@ type User {
   activationLink: String
   avatar: String
   bio: String
-  musicGenres: String
   socialMedia: String
   education: String
   posts(page: Int! = 1): [PostResponse!]!
@@ -113,12 +117,18 @@ type LogoutResponse {
   token: String!
 }
 
+type SearchResponse {
+  user: UserResponse!
+}
+
 type Query {
   users: [User!]!
   user(username: String!): User!
   posts(page: Int! = 1): [PostResponse!]!
   post(id: String!): PostResponse!
   likes: [Like!]!
+  searchByName(username: String!): [SearchResponse!]!
+  searchByHashtag(hashtagId: String!): [SearchResponse!]!
 }
 
 type Mutation {

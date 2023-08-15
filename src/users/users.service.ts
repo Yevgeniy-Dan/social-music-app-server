@@ -3,7 +3,7 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, In, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { UserNotFoundError } from 'src/auth/errors/UserNotFoundError';
 import { plainToClass } from 'class-transformer';
@@ -68,5 +68,9 @@ export class UsersService {
     Object.assign(existedUser, user);
 
     return await this.userRepository.save(existedUser);
+  }
+
+  async findByIds(ids: string[]) {
+    return this.userRepository.findBy({ id: In(ids) });
   }
 }
