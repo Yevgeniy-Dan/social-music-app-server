@@ -67,7 +67,6 @@ type UserResponse {
   isActivated: Boolean!
   avatar: String
   bio: String
-  musicGenres: String
   socialMedia: String
   education: String
 }
@@ -153,7 +152,6 @@ input UpdateUserInput {
   id: String!
   avatar: String
   bio: String
-  musicGenres: String
   socialMedia: String
   education: String
 }

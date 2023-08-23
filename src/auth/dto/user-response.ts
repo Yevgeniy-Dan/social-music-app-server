@@ -23,8 +23,8 @@ export class UserResponse {
   @Field({ nullable: true })
   bio?: string;
 
-  @Field({ nullable: true })
-  musicGenres?: string;
+  // @Field({ nullable: true })
+  // musicGenres?: string;
 
   @Field({ nullable: true })
   socialMedia?: string;

@@ -17,10 +17,10 @@ export class UpdateUserInput extends PartialType(CreateUserInput) {
   @Field({ nullable: true })
   bio?: string;
 
-  @IsString()
-  @IsOptional()
-  @Field({ nullable: true })
-  musicGenres?: string;
+  // @IsString()
+  // @IsOptional()
+  // @Field({ nullable: true })
+  // musicGenres?: string;
 
   @IsString()
   @IsOptional()

@@ -17,6 +17,7 @@ services:
       - PG_PORT=5432
       - JWT_ACCESS_SECRET=EJmVoJU6jzo7cLkJztS1gOOyXVvNkn05KDbxuhAJ4tizs77QSG
       - JWT_REFRESH_SECRET=some_jwt__refresh_secret
+      - JWT_ACCOUNT_ACTIVATION_EXPIRATION=JWT_ACCOUNT_ACTIVATION_EXPIRATION
       - SMTP_HOST=smtp.gmail.com
       - SMTP_PORT=587
       - SMTP_USER=socialmusicapp23@gmail.com
