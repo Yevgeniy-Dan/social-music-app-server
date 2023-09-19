@@ -14,7 +14,7 @@ export class ActivationController {
   async activate(@Query('token') token: string, @Res() response: Response) {
     try {
       await this.activationSerivce.activate(token);
-      return response.redirect(this.configService.get('clientOrigin'));
+      return response.redirect(`${this.configService.get('clientOrigin')}/auth`);
     } catch (error) {
       console.log(error);
     }

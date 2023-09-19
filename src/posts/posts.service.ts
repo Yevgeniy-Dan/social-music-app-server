@@ -21,10 +21,12 @@ export class PostsService {
   }
 
   findAll({ offset, limit }: { offset: number; limit: number }) {
-    return this.postRepository.find({
-      skip: offset,
-      take: limit,
-    });
+    return this.postRepository
+      .createQueryBuilder('post')
+      .orderBy('post.createdAt', 'DESC')
+      .skip(offset)
+      .take(limit)
+      .getMany();
   }
 
   findOne(id: string) {

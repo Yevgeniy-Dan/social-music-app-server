@@ -127,7 +127,7 @@ type Query {
   post(id: String!): PostResponse!
   likes: [Like!]!
   searchByName(username: String!): [SearchResponse!]!
-  searchByHashtag(hashtagId: String!): [SearchResponse!]!
+  searchByHashtag(hashtagName: String!): [SearchResponse!]!
 }
 
 type Mutation {
