@@ -12,15 +12,15 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
 
-  // app.enableCors({
-  //   credentials: true,
-  //   origin: configService.get('clientOrigin'),
-  // });
-
   app.enableCors({
     credentials: true,
-    origin: '*',
+    origin: configService.get('clientOrigin'),
   });
+
+  // app.enableCors({
+  //   credentials: true,
+  //   origin: '*',
+  // });
 
   await app.listen(configService.get('port'));
 }
