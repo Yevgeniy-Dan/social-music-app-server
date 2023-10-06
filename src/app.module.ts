@@ -43,6 +43,7 @@ import { SearchModule } from './search/search.module';
         entities: ['dist/src/**/*.entity.js'],
         synchronize: configService.get('database').synchronize,
         autoLoadEntities: true,
+        ssl: true,
       }),
     }),
     UsersModule,
