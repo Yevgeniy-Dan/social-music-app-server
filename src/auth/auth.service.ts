@@ -13,6 +13,8 @@ import { ConfigService } from '@nestjs/config';
 import { AuthAccessTokenService } from './auth-access-token/auth-access-token.service';
 import { AuthRefreshTokenService } from './auth-refresh-token/auth-refresh-token.service';
 import { JwtTokenResponse } from './interfaces/jwt-token-response.interface';
+import { GraphQLError } from 'graphql';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -63,7 +65,11 @@ export class AuthService {
     const { userId } = user;
     const tokenInDb = await this.authRefreshTokenService.find(token);
     if (!tokenInDb) {
-      throw new UnauthorizedException();
+      throw new GraphQLError('You are not authorized to perform this action.', {
+        extensions: {
+          code: 'FORBIDDEN',
+        },
+      });
     }
 
     const updatedUser = await this.usersService.findUserById(userId);
