@@ -44,9 +44,9 @@ export class PostsResolver {
   }
 
   @Query(() => [PostResponse], { name: 'posts' })
-  @UseGuards(JwtAccessAuthGuard)
+  // @UseGuards(JwtAccessAuthGuard)
   async findAll(@Args() args: PaginationArgs, @Context() context) {
-    const { userId } = context.req.user;
+    // const { userId } = context.req.user;
     const { page } = args;
     const offset = (page - 1) * this.POSTS_PER_PAGE;
 
@@ -55,7 +55,7 @@ export class PostsResolver {
     const postResponses: PostResponse[] = [];
 
     for (const post of posts) {
-      const postResponse = await this.preparePostToResponse(post, userId);
+      const postResponse = await this.preparePostToResponse(post, post.userId);
 
       postResponses.push(postResponse);
     }
@@ -64,12 +64,15 @@ export class PostsResolver {
   }
 
   @Query(() => PostResponse, { name: 'post' })
-  @UseGuards(JwtAccessAuthGuard)
+  // @UseGuards(JwtAccessAuthGuard)
   async findOne(@Args('id') id: string, @Context() context): Promise<PostResponse> {
-    const { userId } = context.req.user;
+    // const { userId } = context.req.user;
 
     const post = await this.postsService.findOne(id);
-    const postResponse = await this.preparePostToResponse(post, userId);
+    if (!post) {
+      throw new NotFoundException(`Post with id ${id} not found`);
+    }
+    const postResponse = await this.preparePostToResponse(post, post.userId);
 
     return postResponse;
   }
